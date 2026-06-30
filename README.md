@@ -1,2 +1,2 @@
 # the-shepherds-library
-online bible sudy place for christian
+online Bible study place for Christians
