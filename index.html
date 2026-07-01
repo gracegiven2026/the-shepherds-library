@@ -1335,10 +1335,10 @@ h4 { font-size: 1.05rem; font-weight: 600; }
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user" onclick="showPage('profile')">
-        <div class="user-avatar" id="userInitials">CG</div>
+        <div class="user-avatar" id="userInitials">?</div>
         <div class="user-info">
-          <div class="user-name" id="userName">Cyrus Gueh</div>
-          <div class="user-plan">Pastor Plan · Active</div>
+          <div class="user-name" id="userName">My Account</div>
+          <div class="user-plan" id="userPlan">Free Plan</div>
         </div>
         <span style="color:var(--ink-4);font-size:0.8rem">›</span>
       </div>
@@ -1364,7 +1364,7 @@ h4 { font-size: 1.05rem; font-weight: 600; }
           🔔<span class="notif-dot"></span>
         </button>
         <button class="icon-btn" onclick="openModal('upgradeModal')" title="Upgrade plan">⭐</button>
-        <div class="user-avatar" style="cursor:pointer" onclick="showPage('profile')">CG</div>
+        <div class="user-avatar" style="cursor:pointer" onclick="showPage('profile')" id="topbarAvatar">?</div>
       </div>
     </div>
 
@@ -1373,7 +1373,7 @@ h4 { font-size: 1.05rem; font-weight: 600; }
       <div class="page-header">
         <div class="page-header-left">
           <div class="page-eyebrow">Welcome back</div>
-          <div class="page-title">Good morning, Pastor Cyrus ☀️</div>
+          <div class="page-title dashboard-greeting">Welcome ☀️</div>
         </div>
         <div class="page-actions">
           <button class="btn btn-secondary btn-sm" onclick="showPage('ai')">✨ Ask AI</button>
@@ -1381,31 +1381,30 @@ h4 { font-size: 1.05rem; font-weight: 600; }
         </div>
       </div>
       <div class="page-content">
-        <!-- Stats row -->
         <div class="dashboard-grid">
           <div class="stat-card">
             <div style="font-size:1.5rem;margin-bottom:0.3rem">🔥</div>
-            <div class="stat-value">14</div>
+            <div class="stat-value stat-streak">0</div>
             <div class="stat-label">Day reading streak</div>
-            <div class="stat-change stat-up">↑ Best streak: 21 days</div>
+            <div class="stat-change" id="streakSubtext">Start reading to build your streak</div>
           </div>
           <div class="stat-card">
             <div style="font-size:1.5rem;margin-bottom:0.3rem">📖</div>
-            <div class="stat-value">847</div>
+            <div class="stat-value stat-chapters">0</div>
             <div class="stat-label">Chapters read</div>
-            <div class="stat-change stat-up">↑ 12 this week</div>
+            <div class="stat-change" id="chaptersSubtext">Begin your Bible reading journey</div>
           </div>
           <div class="stat-card">
             <div style="font-size:1.5rem;margin-bottom:0.3rem">🎤</div>
-            <div class="stat-value">23</div>
+            <div class="stat-value stat-sermons">0</div>
             <div class="stat-label">Sermons saved</div>
-            <div class="stat-change stat-up">↑ 3 this month</div>
+            <div class="stat-change" id="sermonsSubtext">Create your first sermon outline</div>
           </div>
           <div class="stat-card">
             <div style="font-size:1.5rem;margin-bottom:0.3rem">🙏</div>
-            <div class="stat-value">67</div>
+            <div class="stat-value stat-prayers">0</div>
             <div class="stat-label">Prayer entries</div>
-            <div class="stat-change stat-up">↑ 8 answered</div>
+            <div class="stat-change" id="prayersSubtext">Start your prayer journal</div>
           </div>
         </div>
 
@@ -1417,12 +1416,11 @@ h4 { font-size: 1.05rem; font-weight: 600; }
               <button class="btn btn-ghost btn-sm">View all</button>
             </div>
             <div class="widget-body">
-              <div class="recent-activity">
-                <div class="activity-item" onclick="showPage('bible')"><div class="activity-icon">📖</div><div class="activity-text"><div class="activity-title">Read John 14–16</div><div class="activity-meta">Bible Reader · 2 hours ago</div></div></div>
-                <div class="activity-item" onclick="showPage('sermons')"><div class="activity-icon">🎤</div><div class="activity-text"><div class="activity-title">Drafted: "The Promise of the Holy Spirit"</div><div class="activity-meta">Sermon Builder · Yesterday</div></div></div>
-                <div class="activity-item" onclick="showPage('ai')"><div class="activity-icon">✨</div><div class="activity-text"><div class="activity-title">AI study: Romans 8:28–39</div><div class="activity-meta">AI Assistant · 2 days ago</div></div></div>
-                <div class="activity-item" onclick="showPage('studies')"><div class="activity-icon">📚</div><div class="activity-text"><div class="activity-title">Completed: "Doctrine of Grace"</div><div class="activity-meta">Study Library · 3 days ago</div></div></div>
-                <div class="activity-item" onclick="showPage('prayer')"><div class="activity-icon">🙏</div><div class="activity-text"><div class="activity-title">Prayer answered: Church unity</div><div class="activity-meta">Prayer Journal · 4 days ago</div></div></div>
+              <div class="recent-activity" id="recentActivity">
+                <div style="text-align:center;padding:2rem 1rem;color:var(--ink-3)">
+                  <div style="font-size:2rem;margin-bottom:0.5rem">📖</div>
+                  <div style="font-size:0.85rem">No activity yet — start by reading the Bible or asking the AI a question.</div>
+                </div>
               </div>
             </div>
           </div>
@@ -1442,12 +1440,12 @@ h4 { font-size: 1.05rem; font-weight: 600; }
               </div>
             </div>
             <div class="widget">
-              <div class="widget-header"><div class="widget-title">📅 Reading Plan</div><span class="badge badge-gold">Day 14/365</span></div>
+              <div class="widget-header"><div class="widget-title">📅 Reading Plan</div></div>
               <div class="widget-body">
-                <div style="font-size:0.85rem;font-weight:600;color:var(--ink-2);margin-bottom:0.4rem">Through the Bible in a Year</div>
-                <div class="progress-bar mb-1"><div class="progress-fill" style="width:4%"></div></div>
-                <div style="font-size:0.76rem;color:var(--ink-3);margin-bottom:0.75rem">Today: Genesis 38–40 · Matthew 14</div>
-                <button class="btn btn-primary btn-sm" onclick="showPage('bible')">Continue Reading →</button>
+                <div style="font-size:0.85rem;font-weight:600;color:var(--ink-2);margin-bottom:0.5rem">Through the Bible in a Year</div>
+                <div class="progress-bar mb-1"><div class="progress-fill" style="width:0%"></div></div>
+                <div style="font-size:0.76rem;color:var(--ink-3);margin-bottom:0.75rem">Start reading to track your progress</div>
+                <button class="btn btn-primary btn-sm" onclick="showPage('bible')">Start Reading →</button>
               </div>
             </div>
           </div>
@@ -1521,7 +1519,7 @@ h4 { font-size: 1.05rem; font-weight: 600; }
             <button class="btn btn-primary btn-sm btn-full mt-1" onclick="toast('Note saved ✓','📝')">Save Note</button>
             <div class="divider"></div>
             <p style="font-size:0.76rem;color:var(--ink-4);margin-bottom:0.5rem">Saved notes for John 3</p>
-            <div style="background:var(--gold-pale);border:1px solid var(--border);border-radius:var(--r);padding:0.75rem;font-family:'Lora',serif;font-size:0.84rem;font-style:italic;color:var(--ink-2)">"The new birth is not reformation but regeneration — a complete transformation of the inner man by the Holy Spirit." <span style="display:block;font-size:0.7rem;color:var(--gold);margin-top:0.3rem;font-style:normal;font-family:'Inter',sans-serif;font-weight:600">Added June 28, 2026</span></div>
+            <div style="background:var(--gold-pale);border:1px solid var(--border);border-radius:var(--r);padding:0.75rem;font-family:'Lora',serif;font-size:0.84rem;font-style:italic;color:var(--ink-2)">Your notes for this passage will appear here. Click a verse and tap 📝 Note to add one.</div>
           </div>
           <div class="panel-content hidden" id="panel-context">
             <div style="font-size:0.82rem;color:var(--ink-2);line-height:1.65">
@@ -1548,11 +1546,7 @@ h4 { font-size: 1.05rem; font-weight: 600; }
             <button class="btn btn-primary btn-sm" onclick="newConversation()">+ New</button>
           </div>
           <div style="overflow-y:auto;flex:1">
-            <div class="conversation-item active"><div class="conv-title">John 3:16 Deep Study</div><div class="conv-preview">The Greek agape means unconditional...</div><div class="conv-time">2 hours ago</div></div>
-            <div class="conversation-item" onclick="loadConversation(this)"><div class="conv-title">Sermon: Holy Spirit Promise</div><div class="conv-preview">Here's a complete expository outline...</div><div class="conv-time">Yesterday</div></div>
-            <div class="conversation-item" onclick="loadConversation(this)"><div class="conv-title">What is justification?</div><div class="conv-preview">Justification is the forensic act of God...</div><div class="conv-time">2 days ago</div></div>
-            <div class="conversation-item" onclick="loadConversation(this)"><div class="conv-title">Romans 8 Explanation</div><div class="conv-preview">Romans 8 is the pinnacle of Pauline theology...</div><div class="conv-time">3 days ago</div></div>
-            <div class="conversation-item" onclick="loadConversation(this)"><div class="conv-title">Daniel & End Times</div><div class="conv-preview">The 70 weeks prophecy in Daniel 9...</div><div class="conv-time">5 days ago</div></div>
+            <div style="text-align:center;padding:1.5rem 0.5rem;color:var(--ink-4);font-size:0.8rem">No conversations yet.<br>Ask the AI a question to get started.</div>
           </div>
         </div>
 
@@ -1784,25 +1778,9 @@ h4 { font-size: 1.05rem; font-weight: 600; }
               <button class="filter-chip" onclick="filterPrayer(this,'answered')">✓ Answered</button>
             </div>
             <div class="prayer-list" id="prayerList">
-              <div class="prayer-item answered" onclick="openModal('prayerViewModal')">
-                <div class="prayer-item-header"><div class="prayer-title">🙏 Church Unity & Revival</div><div class="prayer-date">Answered ✓ · June 20</div></div>
-                <div class="prayer-body">"Lord, restore unity to our congregation and bring revival to our community. May we be one as You and the Father are one…"</div>
-              </div>
-              <div class="prayer-item" onclick="openModal('prayerViewModal')">
-                <div class="prayer-item-header"><div class="prayer-title">🙏 CSA Fundraising Campaign</div><div class="prayer-date">June 15, 2026</div></div>
-                <div class="prayer-body">"Father, open doors for the Christian Soccer Academy. Bring the right donors and sponsors. Let this ministry reach young people for Your Kingdom…"</div>
-              </div>
-              <div class="prayer-item" onclick="openModal('prayerViewModal')">
-                <div class="prayer-item-header"><div class="prayer-title">🙏 Bassa Community Hall</div><div class="prayer-date">June 8, 2026</div></div>
-                <div class="prayer-body">"Lord, provide the resources and open doors for our community to acquire a permanent gathering place…"</div>
-              </div>
-              <div class="prayer-item" onclick="openModal('prayerViewModal')">
-                <div class="prayer-item-header"><div class="prayer-title">🙏 Family & Children</div><div class="prayer-date">May 30, 2026</div></div>
-                <div class="prayer-body">"God, I pray for my family — that each child would know You personally, walk in Your ways, and fulfill their God-given purpose…"</div>
-              </div>
-              <div class="prayer-item" onclick="openModal('prayerViewModal')">
-                <div class="prayer-item-header"><div class="prayer-title">🙏 GraceGiven Platform Launch</div><div class="prayer-date">May 12, 2026</div></div>
-                <div class="prayer-body">"Lord, let GraceGiven serve Your Church well. May every church that uses it grow in generosity and faithfulness…"</div>
+              <div style="text-align:center;padding:2.5rem 1rem;color:var(--ink-3)">
+                <div style="font-size:2rem;margin-bottom:0.5rem">🙏</div>
+                <div style="font-size:0.85rem">No prayer entries yet.<br>Tap <strong>+ New Prayer</strong> to start your journal.</div>
               </div>
             </div>
           </div>
@@ -1811,9 +1789,9 @@ h4 { font-size: 1.05rem; font-weight: 600; }
               <div class="widget-header"><div class="widget-title">Prayer Stats</div></div>
               <div class="widget-body">
                 <div class="grid-3" style="margin-bottom:1.25rem">
-                  <div style="text-align:center"><div style="font-family:'Lora',serif;font-size:1.6rem;font-weight:700;color:var(--gold)">67</div><div style="font-size:0.72rem;color:var(--ink-3)">Total</div></div>
-                  <div style="text-align:center"><div style="font-family:'Lora',serif;font-size:1.6rem;font-weight:700;color:var(--success)">8</div><div style="font-size:0.72rem;color:var(--ink-3)">Answered</div></div>
-                  <div style="text-align:center"><div style="font-family:'Lora',serif;font-size:1.6rem;font-weight:700;color:var(--navy)">59</div><div style="font-size:0.72rem;color:var(--ink-3)">Active</div></div>
+                  <div style="text-align:center"><div style="font-family:'Lora',serif;font-size:1.6rem;font-weight:700;color:var(--gold)" id="prayerStatTotal">0</div><div style="font-size:0.72rem;color:var(--ink-3)">Total</div></div>
+                  <div style="text-align:center"><div style="font-family:'Lora',serif;font-size:1.6rem;font-weight:700;color:var(--success)" id="prayerStatAnswered">0</div><div style="font-size:0.72rem;color:var(--ink-3)">Answered</div></div>
+                  <div style="text-align:center"><div style="font-family:'Lora',serif;font-size:1.6rem;font-weight:700;color:var(--navy)" id="prayerStatActive">0</div><div style="font-size:0.72rem;color:var(--ink-3)">Active</div></div>
                 </div>
                 <div style="font-size:0.78rem;font-weight:600;color:var(--ink-3);margin-bottom:0.5rem">Categories</div>
                 <div style="display:flex;flex-direction:column;gap:0.4rem">
@@ -1892,9 +1870,10 @@ h4 { font-size: 1.05rem; font-weight: 600; }
       </div>
       <div class="page-content">
         <div class="studies-grid" id="notesGrid">
-          <div class="study-card" onclick="openModal('newNoteModal')"><div class="study-card-top"></div><div class="study-card-body"><div class="study-card-category">John 3:16</div><h4>The Depth of God's Love</h4><p>The Greek word 'agape' used here is not phileo (friendship) or eros (romantic) — it is covenant love...</p><div class="study-card-meta"><span>June 28, 2026</span><span class="badge badge-gold">Bible Note</span></div></div></div>
-          <div class="study-card" onclick="openModal('newNoteModal')"><div class="study-card-top" style="background:var(--navy)"></div><div class="study-card-body"><div class="study-card-category">Romans 8</div><h4>No Condemnation in Christ</h4><p>Romans 8 represents the apex of Pauline soteriology. The chapter moves from liberation (v.1-4) to life in the Spirit...</p><div class="study-card-meta"><span>June 25, 2026</span><span class="badge badge-navy">Sermon Note</span></div></div></div>
-          <div class="study-card" onclick="openModal('newNoteModal')"><div class="study-card-top" style="background:var(--sage)"></div><div class="study-card-body"><div class="study-card-category">Theology</div><h4>The Trinity — Understanding</h4><p>The Trinity is not three gods but one God in three persons. The economic trinity vs. the ontological trinity...</p><div class="study-card-meta"><span>June 20, 2026</span><span class="badge badge-sage">Study Note</span></div></div></div>
+          <div style="grid-column:1/-1;text-align:center;padding:3rem 1rem;color:var(--ink-3)">
+            <div style="font-size:2rem;margin-bottom:0.5rem">📝</div>
+            <div style="font-size:0.85rem">No notes yet. Click <strong>+ New Note</strong> to create your first note.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -2025,10 +2004,10 @@ h4 { font-size: 1.05rem; font-weight: 600; }
         <div class="card mb-2">
           <h4 style="margin-bottom:1.25rem">Personal Information</h4>
           <div style="display:flex;flex-direction:column;gap:1rem">
-            <div class="form-row"><div class="form-group"><label class="form-label">Full Name</label><input class="form-input" value="Cyrus W. Gueh Sr."></div><div class="form-group"><label class="form-label">Display Name</label><input class="form-input" value="Pastor Cyrus"></div></div>
-            <div class="form-group"><label class="form-label">Email</label><input class="form-input" value="cyrus@example.com" type="email"></div>
-            <div class="form-row"><div class="form-group"><label class="form-label">Ministry Title</label><input class="form-input" value="Executive Director, CSA | Pastor"></div><div class="form-group"><label class="form-label">Church / Ministry</label><input class="form-input" value="Christian Soccer Academy"></div></div>
-            <div class="form-group"><label class="form-label">Location</label><input class="form-input" value="Waukee, Iowa, USA"></div>
+            <div class="form-row"><div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="profileFullName" placeholder="Your full name"></div><div class="form-group"><label class="form-label">Display Name</label><input class="form-input" id="profileDisplayName" placeholder="Display name"></div></div>
+            <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="profileEmail" type="email" placeholder="your@email.com" readonly></div>
+            <div class="form-row"><div class="form-group"><label class="form-label">Ministry Title</label><input class="form-input" id="profileMinistryTitle" placeholder="e.g. Pastor, Teacher, Elder"></div><div class="form-group"><label class="form-label">Church / Ministry</label><input class="form-input" id="profileChurch" placeholder="Your church or ministry name"></div></div>
+            <div class="form-group"><label class="form-label">Location</label><input class="form-input" id="profileLocation" placeholder="City, State, Country"></div>
           </div>
         </div>
         <div class="card mb-2">
@@ -2911,9 +2890,1162 @@ async function onSignedIn(user) {
     // Update sidebar name & avatar
     const name = profile.display_name || profile.full_name || user.email.split('@')[0];
     const initials = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
-    document.querySelectorAll('.sidebar-user .user-name, [style*="user-name"]').forEach(el=>{ if(el.textContent.includes('Cyrus') || el.classList.contains('user-name')) el.textContent = name; });
-    document.querySelectorAll('.user-avatar').forEach(el=>el.textContent = initials);
-    document.querySelectorAll('.sidebar-user-plan').forEach(el=>el.textContent = (profile.subscription_tier||'free').charAt(0).toUpperCase()+(profile.subscription_tier||'free').slice(1)+' Plan · Active');
+    document.getElementById('userInitials').textContent = initials;
+    document.getElementById('topbarAvatar').textContent = initials;
+    document.getElementById('userName').textContent = name;
+    document.getElementById('userPlan').textContent = (profile.subscription_tier||'free').charAt(0).toUpperCase()+(profile.subscription_tier||'free').slice(1)+' Plan';
+    // Update welcome greeting
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    const title = profile.ministry_title ? `, ${profile.ministry_title}` : '';
+    const firstName = (profile.full_name||name).split(' ')[0];
+    document.querySelectorAll('.dashboard-greeting').forEach(el=>el.textContent = `${greeting}${title} ${firstName} ☀️`);
+    // Load dashboard stats
+    loadDashboardStats(user.id);
+    // Populate profile page fields
+    const pFull = document.getElementById('profileFullName'); if(pFull) pFull.value = profile.full_name||'';
+    const pDisp = document.getElementById('profileDisplayName'); if(pDisp) pDisp.value = profile.display_name||'';
+    const pEmail = document.getElementById('profileEmail'); if(pEmail) pEmail.value = user.email||'';
+    const pMin = document.getElementById('profileMinistryTitle'); if(pMin) pMin.value = profile.ministry_title||'';
+    const pChurch = document.getElementById('profileChurch'); if(pChurch) pChurch.value = profile.church_name||'';
+    const pLoc = document.getElementById('profileLocation'); if(pLoc) pLoc.value = [profile.location_city, profile.location_state, profile.location_country].filter(Boolean).join(', ');
+  }
+  document.getElementById('landingPage').classList.remove('active');
+  document.getElementById('appShell').style.display = 'flex';
+  showPage('dashboard');
+  toast('Welcome back ✓','✝');
+}
+
+// Check for existing session on page load
+async function initAuth() {
+  if (!sb()) return;
+  // Handle OAuth redirects
+  const { data: { session } } = await sb().auth.getSession();
+  if (session?.user) {
+    await onSignedIn(session.user);
+  }
+  // Listen for auth changes (e.g. after email confirmation)
+  sb().auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session?.user && !isLoggedIn) {
+      await onSignedIn(session.user);
+    }
+    if (event === 'SIGNED_OUT') {
+      isLoggedIn = false;
+      currentUser = null;
+    }
+  });
+}
+
+// ── Dashboard Stats ─────────────────────────────
+async function loadDashboardStats(userId) {
+  if (!userId) return;
+  try {
+    const [notes, sermons, prayers, streak] = await Promise.all([
+      sb().from('user_notes').select('id', {count:'exact',head:true}).eq('user_id', userId),
+      sb().from('sermon_outlines').select('id', {count:'exact',head:true}).eq('user_id', userId),
+      sb().from('prayer_journal_entries').select('id', {count:'exact',head:true}).eq('user_id', userId),
+      sb().from('user_reading_streaks').select('current_streak,total_read_days').eq('user_id', userId).single()
+    ]);
+    document.querySelectorAll('.stat-sermons').forEach(el=>el.textContent = sermons.count ?? 0);
+    document.querySelectorAll('.stat-prayers').forEach(el=>el.textContent = prayers.count ?? 0);
+    document.querySelectorAll('.stat-streak').forEach(el=>el.textContent = (streak.data?.current_streak ?? 0));
+  } catch(e) { /* non-fatal */ }
+}
+
+// ── Notes ────────────────────────────────────────
+async function saveNote() {
+  if (!currentUser) { openModal('loginModal'); return; }
+  const scripture = document.querySelector('#noteModal .form-input[value]')?.value
+    || document.querySelector('#noteModal input[placeholder*="cripture"]')?.value || '';
+  const content   = document.querySelector('#noteModal textarea')?.value?.trim();
+  const tags      = document.querySelector('#noteModal input[placeholder*="tag"]')?.value || '';
+  if (!content) { toast('Write something first','⚠️'); return; }
+  const { error } = await sb().from('user_notes').insert({
+    user_id: currentUser.id,
+    scripture,
+    content,
+    tags: tags ? tags.split(',').map(t=>t.trim()) : [],
+    note_type: 'bible'
+  });
+  if (error) { toast('Could not save note','❌'); return; }
+  closeModal('noteModal');
+  toast('Note saved ✓','📝');
+}
+
+// ── Prayer Journal ───────────────────────────────
+async function savePrayer() {
+  if (!currentUser) { openModal('loginModal'); return; }
+  const title    = document.querySelector('#newPrayerModal input[placeholder*="itle"]')?.value?.trim();
+  const content  = document.querySelector('#newPrayerModal textarea')?.value?.trim();
+  const category = document.querySelector('#newPrayerModal select')?.value || 'other';
+  const scripture= document.querySelector('#newPrayerModal input[placeholder*="cripture"]')?.value?.trim() || null;
+  if (!content) { toast('Write your prayer first','⚠️'); return; }
+  const cat = category.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z_]/g,'');
+  const { error } = await sb().from('prayer_journal_entries').insert({
+    user_id: currentUser.id,
+    title: title || null,
+    content,
+    category: cat || 'other',
+    scripture
+  });
+  if (error) { toast('Could not save prayer','❌'); return; }
+  closeModal('newPrayerModal');
+  toast('Prayer saved ✓','🙏');
+  loadPrayers();
+}
+
+async function loadPrayers() {
+  if (!currentUser) return;
+  const { data } = await sb().from('prayer_journal_entries')
+    .select('*').eq('user_id', currentUser.id)
+    .order('created_at', {ascending: false}).limit(10);
+  if (!data?.length) return;
+  const list = document.getElementById('prayerList');
+  if (!list) return;
+  list.innerHTML = data.map(p => `
+    <div class="prayer-item${p.is_answered?' answered':''}">
+      <div class="prayer-item-header">
+        <span class="prayer-title">${p.title || p.content.slice(0,40)}…</span>
+        ${p.is_answered ? '<span class="badge badge-gold">Answered ✓</span>' : ''}
+      </div>
+      <div class="prayer-meta">${new Date(p.created_at).toLocaleDateString()}</div>
+      <div class="prayer-preview">"${p.content.slice(0,120)}…"</div>
+    </div>`).join('');
+}
+
+// ── Sermons ──────────────────────────────────────
+async function saveSermon() {
+  if (!currentUser) { openModal('loginModal'); return; }
+  const title     = document.getElementById('sermonTitle')?.value?.trim();
+  const scripture = document.getElementById('sermonScripture')?.value?.trim();
+  const intro     = document.getElementById('sermonIntro')?.value?.trim();
+  const conclusion= document.getElementById('sermonConclusion')?.value?.trim();
+  const prayer    = document.getElementById('sermonPrayer')?.value?.trim();
+  if (!title || !scripture) { toast('Add a title and scripture first','⚠️'); return; }
+  const { error } = await sb().from('sermon_outlines').insert({
+    user_id: currentUser.id,
+    title,
+    primary_scripture: scripture,
+    introduction: intro,
+    conclusion,
+    prayer,
+    status: 'draft'
+  });
+  if (error) { toast('Could not save sermon','❌'); return; }
+  toast('Sermon saved ✓','🎤');
+}
+
+// ── Bookmarks ────────────────────────────────────
+async function saveBookmark(bookId, chapter, verse, label) {
+  if (!currentUser) { openModal('loginModal'); return; }
+  await sb().from('user_bookmarks').upsert({
+    user_id: currentUser.id,
+    bookmark_type: 'verse',
+    book_id: bookId,
+    chapter_number: chapter,
+    verse_number: verse,
+    label: label || null
+  }, { onConflict: 'user_id,bookmark_type,book_id,chapter_number,verse_number' });
+  toast('Bookmarked ✓','🔖');
+}
+
+// ── Reading History ───────────────────────────────
+async function trackReading(bookId, chapter) {
+  if (!currentUser) return;
+  await sb().from('user_reading_history').insert({
+    user_id: currentUser.id,
+    book_id: bookId,
+    chapter_number: chapter
+  });
+}
+
+function enterApp() {
+  // Kept for backward-compat with any remaining onclick references
+  // Real entry now goes through onSignedIn()
+  if (!isLoggedIn) { openModal('loginModal'); return; }
+  document.getElementById('landingPage').classList.remove('active');
+  document.getElementById('appShell').style.display = 'flex';
+  showPage('dashboard');
+}
+
+// ═══════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════
+function toast(msg, icon='✓') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(()=>t.style.opacity='0', 2800);
+  setTimeout(()=>t.remove(), 3100);
+}
+
+// ═══════════════════════════════════════════════
+// DARK MODE
+// ═══════════════════════════════════════════════
+function toggleDark() {
+  const html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+  toast(html.dataset.theme === 'dark' ? 'Dark mode on' : 'Light mode on', '🌙');
+}
+
+// ═══════════════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════════════
+function globalSearchFn() {
+  const q = document.getElementById('globalSearch')?.value.trim();
+  if (!q) return;
+  if (q.match(/^\d+/) || q.includes(':') || q.toLowerCase().includes('john') || q.toLowerCase().includes('rom')) {
+    toast(`Searching Bible for "${q}"…`, '📖');
+    showPage('bible');
+  } else {
+    askAI(`Search the Bible for: "${q}". List the most relevant verses with brief explanation of each.`);
+    showPage('ai');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// DEVOTIONAL DATE
+// ═══════════════════════════════════════════════
+function setDevDate() {
+  const el = document.getElementById('devDate');
+  if (el) el.textContent = new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}).toUpperCase();
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  initBible();
+  initAuth(); // restore Supabase session if user was already signed in
+  initStudies();
+  initLexicon();
+  initAdmin();
+  setDevDate();
+
+  // Page-specific inits when switching pages
+  const observer = new MutationObserver(muts => {
+    muts.forEach(m => {
+      if (m.type==='attributes' && m.target.classList.contains('active')) {
+        const id = m.target.id.replace('page-','');
+        if (id==='bible') initBible();
+        if (id==='studies') initStudies();
+        if (id==='lexicon') initLexicon();
+        if (id==='admin') initAdmin();
+      }
+    });
+  });
+  document.querySelectorAll('.page').forEach(p=>observer.observe(p,{attributes:true,attributeFilter:['class']}));
+});
+</script>
+</body>
+</html><div class="study-grid" id="bookmarksGrid">
+          <div style="grid-column:1/-1;text-align:center;padding:3rem 1rem;color:var(--ink-3)">
+            <div style="font-size:2rem;margin-bottom:0.5rem">🔖</div>
+            <div style="font-size:0.85rem">No bookmarks yet. Tap a verse in the Bible reader and select <strong>🔖 Bookmark verse</strong>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PROFILE ── -->
+    <div class="page" id="page-profile">
+      <div class="page-header"><div class="page-header-left"><div class="page-eyebrow">Account</div><div class="page-title">My Profile</div></div><div class="page-actions"><button class="btn btn-primary btn-sm" onclick="toast('Profile saved ✓','✓')">Save Changes</button></div></div>
+      <div class="page-content" style="max-width:640px">
+        <div class="card mb-2">
+          <h4 style="margin-bottom:1.25rem">Personal Information</h4>
+          <div style="display:flex;flex-direction:column;gap:1rem">
+            <div class="form-row"><div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="profileFullName" placeholder="Your full name"></div><div class="form-group"><label class="form-label">Display Name</label><input class="form-input" id="profileDisplayName" placeholder="Display name"></div></div>
+            <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="profileEmail" type="email" placeholder="your@email.com" readonly></div>
+            <div class="form-row"><div class="form-group"><label class="form-label">Ministry Title</label><input class="form-input" id="profileMinistryTitle" placeholder="e.g. Pastor, Teacher, Elder"></div><div class="form-group"><label class="form-label">Church / Ministry</label><input class="form-input" id="profileChurch" placeholder="Your church or ministry name"></div></div>
+            <div class="form-group"><label class="form-label">Location</label><input class="form-input" id="profileLocation" placeholder="City, State, Country"></div>
+          </div>
+        </div>
+        <div class="card mb-2">
+          <h4 style="margin-bottom:1.25rem">Study Preferences</h4>
+          <div style="display:flex;flex-direction:column;gap:1rem">
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Default Translation</label><select class="form-input form-select"><option selected>King James Version (KJV)</option><option>World English Bible (WEB)</option><option>American Standard Version (ASV)</option></select></div>
+              <div class="form-group"><label class="form-label">Daily Reading Goal</label><select class="form-input form-select"><option>15 minutes</option><option selected>30 minutes</option><option>60 minutes</option></select></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h4 style="margin-bottom:1rem">Current Plan</h4>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div><div class="plan-name">Pastor Plan</div><div style="font-size:0.82rem;color:var(--ink-3)">$24/mo · Renews July 30, 2026</div></div>
+            <button class="btn btn-secondary btn-sm" onclick="openModal('upgradeModal')">Manage Plan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end main-content -->
+</div><!-- end app-shell -->
+
+<!-- ═══════════════════════════════════════════════
+     MODALS
+═══════════════════════════════════════════════ -->
+
+<!-- Login -->
+<div class="modal-backdrop" id="loginModal">
+  <div class="modal">
+    <div class="modal-header"><h3>Welcome Back</h3><button class="modal-close" onclick="closeModal('loginModal')">✕</button></div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-bottom:1.25rem">
+        <button class="btn btn-secondary btn-full" onclick="socialAuth('Google')">🔵 Google</button>
+        <button class="btn btn-secondary btn-full" onclick="socialAuth('Apple')">⬛ Apple</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem"><div class="divider" style="margin:0;flex:1"></div><span style="font-size:0.75rem;color:var(--ink-4)">or</span><div class="divider" style="margin:0;flex:1"></div></div>
+      <div style="display:flex;flex-direction:column;gap:0.85rem">
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@example.com" id="loginEmail"></div>
+        <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="Your password" id="loginPassword"></div>
+        <button class="btn btn-primary btn-full" onclick="doLogin()">Sign In →</button>
+        <div style="text-align:center;font-size:0.78rem;color:var(--ink-3)">Don't have an account? <button class="btn btn-ghost btn-sm" style="padding:0;font-size:0.78rem" onclick="closeModal('loginModal');openModal('signupModal')">Sign up free</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Signup -->
+<div class="modal-backdrop" id="signupModal">
+  <div class="modal">
+    <div class="modal-header"><h3>Create Your Account</h3><button class="modal-close" onclick="closeModal('signupModal')">✕</button></div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-bottom:1.25rem">
+        <button class="btn btn-secondary btn-full" onclick="socialAuth('Google')">🔵 Google</button>
+        <button class="btn btn-secondary btn-full" onclick="socialAuth('Apple')">⬛ Apple</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem"><div class="divider" style="margin:0;flex:1"></div><span style="font-size:0.75rem;color:var(--ink-4)">or create account</span><div class="divider" style="margin:0;flex:1"></div></div>
+      <div style="display:flex;flex-direction:column;gap:0.85rem">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="signupFirst" placeholder="First"></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" id="signupLast" placeholder="Last"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="signupEmail" placeholder="you@example.com"></div>
+        <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" id="signupPassword" placeholder="Create a password"></div>
+        <div class="form-group"><label class="form-label">I am a…</label><select class="form-input form-select" id="signupUserType"><option>General Believer</option><option>Pastor / Minister</option><option>Bible Teacher</option><option>Seminary Student</option><option>New Believer</option><option>Seeker</option></select></div>
+        <button class="btn btn-primary btn-full" onclick="doSignup()">Create Free Account →</button>
+        <div style="text-align:center;font-size:0.75rem;color:var(--ink-4)">By creating an account you agree to our <a href="#" style="color:var(--gold)">Terms</a> and <a href="#" style="color:var(--gold)">Privacy Policy</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Note modal -->
+<div class="modal-backdrop" id="noteModal">
+  <div class="modal">
+    <div class="modal-header"><h3>Add Note</h3><button class="modal-close" onclick="closeModal('noteModal')">✕</button></div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:0.85rem">
+        <div class="form-group"><label class="form-label">Scripture Reference</label><input class="form-input" value="John 3:16"></div>
+        <div class="form-group"><label class="form-label">Note</label><textarea class="form-input form-textarea" placeholder="Write your note…" rows="5"></textarea></div>
+        <div class="form-group"><label class="form-label">Tags</label><input class="form-input" placeholder="gospel, grace, love…"></div>
+        <button class="btn btn-primary btn-full" onclick="saveNote()">Save Note</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Prayer -->
+<div class="modal-backdrop" id="newPrayerModal">
+  <div class="modal">
+    <div class="modal-header"><h3>New Prayer Entry</h3><button class="modal-close" onclick="closeModal('newPrayerModal')">✕</button></div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:0.85rem">
+        <div class="form-group"><label class="form-label">Prayer Title</label><input class="form-input" placeholder="e.g. Healing for my mother"></div>
+        <div class="form-group"><label class="form-label">Category</label><select class="form-input form-select"><option>Health & Healing</option><option>Family</option><option>Ministry</option><option>Financial</option><option>Spiritual Growth</option><option>Guidance</option><option>Other</option></select></div>
+        <div class="form-group"><label class="form-label">Prayer</label><textarea class="form-input form-textarea" placeholder="Write your prayer…" rows="6"></textarea></div>
+        <div class="form-group"><label class="form-label">Scripture (optional)</label><input class="form-input" placeholder="e.g. Philippians 4:6"></div>
+        <button class="btn btn-primary btn-full" onclick="savePrayer()">Save Prayer Entry</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Translation modal -->
+<div class="modal-backdrop" id="translationModal">
+  <div class="modal">
+    <div class="modal-header"><h3>Choose Translation</h3><button class="modal-close" onclick="closeModal('translationModal')">✕</button></div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:0.5rem">
+        <button class="btn btn-secondary btn-full" onclick="setTranslation('KJV')">📖 King James Version (KJV) — Public Domain</button>
+        <button class="btn btn-secondary btn-full" onclick="setTranslation('WEB')">📖 World English Bible (WEB) — Public Domain</button>
+        <button class="btn btn-secondary btn-full" onclick="setTranslation('ASV')">📖 American Standard Version (ASV) — Public Domain</button>
+        <button class="btn btn-secondary btn-full" onclick="setTranslation('BBE')">📖 Bible in Basic English (BBE) — Public Domain</button>
+        <div class="divider"></div>
+        <button class="btn btn-primary btn-full" onclick="openModal('upgradeModal');closeModal('translationModal')">⭐ Unlock NKJV, NIV, ESV, NLT — Upgrade Plan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Upgrade modal -->
+<div class="modal-backdrop" id="upgradeModal">
+  <div class="modal">
+    <div class="modal-header"><h3>Upgrade Your Plan</h3><button class="modal-close" onclick="closeModal('upgradeModal')">✕</button></div>
+    <div class="modal-body">
+      <div style="text-align:center;margin-bottom:1.25rem"><div style="font-size:2rem;margin-bottom:0.4rem">⭐</div><p style="color:var(--ink-3);font-size:0.88rem">Unlock the full power of The Shepherd's Library</p></div>
+      <div style="display:flex;flex-direction:column;gap:0.6rem">
+        <button class="btn btn-primary btn-full" onclick="closeModal('upgradeModal');toast('Starting Disciple trial ✓','⭐')">Disciple Plan — $9/mo · Start 14-Day Trial</button>
+        <button class="btn btn-secondary btn-full" onclick="closeModal('upgradeModal');toast('Starting Pastor trial ✓','⭐')">Pastor Plan — $24/mo · Start 14-Day Trial</button>
+        <button class="btn btn-secondary btn-full" onclick="closeModal('upgradeModal');toast('Team plan inquiry sent ✓','⭐')">Church/Team Plan — $49/mo · Contact Sales</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Study -->
+<div class="modal-backdrop" id="newStudyModal">
+  <div class="modal">
+    <div class="modal-header"><h3>Create Bible Study</h3><button class="modal-close" onclick="closeModal('newStudyModal')">✕</button></div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:0.85rem">
+        <div class="form-group"><label class="form-label">Title</label><input class="form-input" placeholder="Study title…"></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Category</label><select class="form-input form-select"><option>Salvation</option><option>Faith</option><option>Prayer</option><option>Theology</option><option>Leadership</option><option>Marriage</option></select></div>
+          <div class="form-group"><label class="form-label">Difficulty</label><select class="form-input form-select"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div>
+        </div>
+        <div class="form-group"><label class="form-label">Key Scripture</label><input class="form-input" placeholder="e.g. Romans 8:1-39"></div>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal('newStudyModal');askAI('Create a complete Bible study lesson outline on this topic');showPage('ai')">✨ Generate with AI instead</button>
+        <button class="btn btn-primary btn-full" onclick="closeModal('newStudyModal');toast('Study created ✓','📚')">Create Study</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Note -->
+<div class="modal-backdrop" id="newNoteModal">
+  <div class="modal">
+    <div class="modal-header"><h3>New Note</h3><button class="modal-close" onclick="closeModal('newNoteModal')">✕</button></div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:0.85rem">
+        <div class="form-group"><label class="form-label">Title</label><input class="form-input" placeholder="Note title…"></div>
+        <div class="form-group"><label class="form-label">Note Type</label><select class="form-input form-select"><option>Bible Note</option><option>Sermon Note</option><option>Study Note</option><option>General</option></select></div>
+        <div class="form-group"><label class="form-label">Scripture (optional)</label><input class="form-input" placeholder="e.g. John 3:16"></div>
+        <div class="form-group"><label class="form-label">Content</label><textarea class="form-input form-textarea" rows="6" placeholder="Write your note…"></textarea></div>
+        <button class="btn btn-primary btn-full" onclick="closeModal('newNoteModal');toast('Note saved ✓','📝')">Save Note</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Verse context menu -->
+<div class="verse-menu" id="verseMenu">
+  <div class="highlight-swatches">
+    <div class="swatch" style="background:#FFE066" onclick="highlightVerse('y')" title="Yellow"></div>
+    <div class="swatch" style="background:#80D4A0" onclick="highlightVerse('g')" title="Green"></div>
+    <div class="swatch" style="background:#80A0E0" onclick="highlightVerse('b')" title="Blue"></div>
+    <div class="swatch" style="background:transparent;border:2px dashed var(--border)" onclick="removeHighlight()" title="Remove"></div>
+  </div>
+  <button class="verse-menu-item" onclick="bookmarkVerse()">🔖 Bookmark verse</button>
+  <button class="verse-menu-item" onclick="openModal('noteModal');closeMenu()">📝 Add note</button>
+  <button class="verse-menu-item" onclick="copyVerse()">📋 Copy verse</button>
+  <button class="verse-menu-item" onclick="studyVerse()">✨ Study with AI</button>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════
+
+const bibleBooks = {
+  OT: [
+    {n:'Genesis',c:50},{n:'Exodus',c:40},{n:'Leviticus',c:27},{n:'Numbers',c:36},{n:'Deuteronomy',c:34},
+    {n:'Joshua',c:24},{n:'Judges',c:21},{n:'Ruth',c:4},{n:'1 Samuel',c:31},{n:'2 Samuel',c:24},
+    {n:'1 Kings',c:22},{n:'2 Kings',c:25},{n:'1 Chronicles',c:29},{n:'2 Chronicles',c:36},{n:'Ezra',c:10},
+    {n:'Nehemiah',c:13},{n:'Esther',c:10},{n:'Job',c:42},{n:'Psalms',c:150},{n:'Proverbs',c:31},
+    {n:'Ecclesiastes',c:12},{n:'Song of Solomon',c:8},{n:'Isaiah',c:66},{n:'Jeremiah',c:52},
+    {n:'Lamentations',c:5},{n:'Ezekiel',c:48},{n:'Daniel',c:12},{n:'Hosea',c:14},{n:'Joel',c:3},
+    {n:'Amos',c:9},{n:'Obadiah',c:1},{n:'Jonah',c:4},{n:'Micah',c:7},{n:'Nahum',c:3},
+    {n:'Habakkuk',c:3},{n:'Zephaniah',c:3},{n:'Haggai',c:2},{n:'Zechariah',c:14},{n:'Malachi',c:4}
+  ],
+  NT: [
+    {n:'Matthew',c:28},{n:'Mark',c:16},{n:'Luke',c:24},{n:'John',c:21},{n:'Acts',c:28},
+    {n:'Romans',c:16},{n:'1 Corinthians',c:16},{n:'2 Corinthians',c:13},{n:'Galatians',c:6},
+    {n:'Ephesians',c:6},{n:'Philippians',c:4},{n:'Colossians',c:4},{n:'1 Thessalonians',c:5},
+    {n:'2 Thessalonians',c:3},{n:'1 Timothy',c:6},{n:'2 Timothy',c:4},{n:'Titus',c:3},
+    {n:'Philemon',c:1},{n:'Hebrews',c:13},{n:'James',c:5},{n:'1 Peter',c:5},{n:'2 Peter',c:3},
+    {n:'1 John',c:5},{n:'2 John',c:1},{n:'3 John',c:1},{n:'Jude',c:1},{n:'Revelation',c:22}
+  ]
+};
+
+const john3 = [
+  {v:1,t:'There was a man of the Pharisees, named Nicodemus, a ruler of the Jews:'},
+  {v:2,t:'The same came to Jesus by night, and said unto him, Rabbi, we know that thou art a teacher come from God: for no man can do these miracles that thou doest, except God be with him.'},
+  {v:3,t:'Jesus answered and said unto him, Verily, verily, I say unto thee, Except a man be born again, he cannot see the kingdom of God.'},
+  {v:4,t:'Nicodemus saith unto him, How can a man be born when he is old? can he enter the second time into his mother\'s womb, and be born?'},
+  {v:5,t:'Jesus answered, Verily, verily, I say unto thee, Except a man be born of water and of the Spirit, he cannot enter into the kingdom of God.'},
+  {v:6,t:'That which is born of the flesh is flesh; and that which is born of the Spirit is spirit.'},
+  {v:7,t:'Marvel not that I said unto thee, Ye must be born again.'},
+  {v:8,t:'The wind bloweth where it listeth, and thou hearest the sound thereof, but canst not tell whence it cometh, and whither it goeth: so is every one that is born of the Spirit.'},
+  {v:9,t:'Nicodemus answered and said unto him, How can these things be?'},
+  {v:10,t:'Jesus answered and said unto him, Art thou a master of Israel, and knowest not these things?'},
+  {v:14,t:'And as Moses lifted up the serpent in the wilderness, even so must the Son of man be lifted up:'},
+  {v:15,t:'That whosoever believeth in him should not perish, but have eternal life.'},
+  {v:16,t:'For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.'},
+  {v:17,t:'For God sent not his Son into the world to condemn the world; but that the world through him might be saved.'},
+  {v:18,t:'He that believeth on him is not condemned: but he that believeth not is condemned already, because he hath not believed in the name of the only begotten Son of God.'},
+  {v:19,t:'And this is the condemnation, that light is come into the world, and men loved darkness rather than light, because their deeds were evil.'},
+  {v:36,t:'He that believeth on the Son hath everlasting life: and he that believeth not the Son shall not see life; but the wrath of God abideth on him.'}
+];
+
+const studiesData = [
+  {cat:'Salvation',title:'Salvation by Grace Through Faith',desc:'The foundational truth of the Gospel — how God justifies sinners through faith in Jesus Christ alone.',min:25},
+  {cat:'Faith',title:'The Nature and Power of Faith',desc:'What is biblical faith? How does it differ from mere belief, and how does it connect us to God\'s promises?',min:30},
+  {cat:'Prayer',title:'The Theology and Practice of Prayer',desc:'A comprehensive study of prayer — types, promises, hindrances, and examples from Scripture.',min:35},
+  {cat:'Holy Spirit',title:'Who Is the Holy Spirit?',desc:'The person, names, nature, and work of the Holy Spirit in salvation and the Christian life.',min:40},
+  {cat:'Grace',title:'Amazing Grace — The Unmerited Favor of God',desc:'Understanding charis — God\'s free, undeserved favor that saves, sustains, and transforms.',min:30},
+  {cat:'Marriage',title:'God\'s Design for Marriage',desc:'Ephesians 5 and the biblical theology of marriage as a covenant reflecting Christ\'s love for the Church.',min:45},
+  {cat:'Leadership',title:'Servant Leadership — The Jesus Model',desc:'Biblical principles of leadership drawn from the life and teaching of Christ and the Apostles.',min:35},
+  {cat:'End Times',title:'Understanding Biblical Eschatology',desc:'A balanced study of end-times prophecy — rapture, tribulation, millennium, and the eternal state.',min:50},
+  {cat:'Theology',title:'The Doctrine of the Trinity',desc:'One God in three persons — Father, Son, and Holy Spirit. How Scripture reveals the triune God.',min:45},
+  {cat:'Old Testament',title:'Genesis: In the Beginning',desc:'Creation, fall, flood, and the patriarchs — the foundation of the entire biblical narrative.',min:60},
+  {cat:'New Testament',title:'Romans: The Gospel Unveiled',desc:'Paul\'s masterpiece of theology — sin, grace, justification, sanctification, and the future of Israel.',min:60},
+  {cat:'Christian Living',title:'Renewing Your Mind — Romans 12:1-2',desc:'The biblical call to transformation through the renovation of thought. Overcoming worldly patterns.',min:25},
+];
+
+const lexiconData = [
+  {word:'ἀγάπη',translit:'agápē',strongs:'G26',pos:'Noun, Feminine',pronun:'ah-GAH-pay',def:'Unconditional, self-giving, covenant love. The highest form of love in Greek — divine love that God shows humanity and that believers are called to show one another.',verses:['John 3:16','1 Cor 13:1','1 John 4:8','Rom 8:35']},
+  {word:'πίστις',translit:'pístis',strongs:'G4102',pos:'Noun, Feminine',pronun:'PIS-tis',def:'Faith, trust, belief, faithfulness. In the NT, refers primarily to saving faith in Jesus Christ as the sole ground of justification.',verses:['Heb 11:1','Eph 2:8','Rom 10:17','Gal 2:20']},
+  {word:'χάρις',translit:'cháris',strongs:'G5485',pos:'Noun, Feminine',pronun:'KHA-ris',def:"Grace — God's unmerited favor toward sinners. Central to the gospel: salvation by grace through faith, not works.",verses:['Eph 2:8','Eph 2:9','John 1:14','Tit 2:11']},
+  {word:'λόγος',translit:'lógos',strongs:'G3056',pos:'Noun, Masculine',pronun:'LOG-os',def:'Word, reason, divine expression. Used in John 1:1 for Jesus as the eternal divine Word — the full expression of God.',verses:['John 1:1','John 1:14','Rev 19:13','Heb 4:12']},
+  {word:'σωτηρία',translit:'sōtēría',strongs:'G4991',pos:'Noun, Feminine',pronun:'so-tay-REE-ah',def:'Salvation, deliverance, rescue. The comprehensive work of God rescuing humanity from sin, death, and judgment.',verses:['Acts 4:12','Rom 1:16','Eph 1:13','Phil 2:12']},
+];
+
+const adminUsers = [
+  {name:'Sarah Johnson',email:'sarah@church.org',role:'Pastor',plan:'Pastor',joined:'Jan 12, 2026',status:'Active'},
+  {name:'David Williams',email:'david@gmail.com',role:'Member',plan:'Disciple',joined:'Feb 8, 2026',status:'Active'},
+  {name:'Mary Thompson',email:'mary@seminary.edu',role:'Teacher',plan:'Disciple',joined:'Mar 3, 2026',status:'Active'},
+  {name:'James Brown',email:'james@church.net',role:'Admin',plan:'Church',joined:'Dec 5, 2025',status:'Active'},
+  {name:'Ruth Davis',email:'ruth@email.com',role:'Member',plan:'Free',joined:'Apr 20, 2026',status:'Trial'},
+  {name:'Michael Carter',email:'mcarter@ministry.org',role:'Pastor',plan:'Pastor',joined:'May 1, 2026',status:'Active'},
+];
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let currentBook = 'John'; let currentChapter = 3;
+let currentTestament = 'NT'; let isLoggedIn = false;
+let aiThinking = false; let selectedVerse = null;
+let currentLang = 'greek'; let currentUser = null;
+
+// ───────────────────────────────────────────────────────────────
+// IMPORTANT — AI BACKEND CONFIGURATION
+// This calls a small serverless proxy (see the shepherds-library-proxy-vercel
+// project) that holds your ANTHROPIC_API_KEY server-side and forwards
+// requests to the Anthropic API — direct browser calls to Anthropic are
+// blocked for security reasons. Once you deploy that proxy on Vercel,
+// replace the placeholder URL below with your real one, e.g.
+// 'https://shepherds-library-proxy.vercel.app/api/ai'
+// ───────────────────────────────────────────────────────────────
+const AI_API_ENDPOINT = 'https://the-shepherds-library.vercel.app/api/ai'; // Vercel proxy
+
+const systemPrompt = `You are the Berean AI — a biblically grounded Bible study assistant for "The Shepherd's Library" platform.
+
+Rules:
+- Ground all answers in Scripture. Always cite Bible verses with book, chapter, verse.
+- CLEARLY distinguish between: (1) Scripture itself, (2) your explanation, (3) theological commentary from named sources.
+- Never present personal opinion as biblical truth.
+- When relevant, include Greek or Hebrew word studies with Strong's numbers.
+- For sermon outlines: use Title, Theme, Scripture, Introduction, Main Points (I/II/III with sub-points), Cross References, Application, Conclusion, Altar Call, Prayer.
+- Be pastoral, warm, and clear — like a knowledgeable pastor helping a fellow believer study.
+- Format responses with clear structure using line breaks.
+- Keep responses 150–400 words unless a full outline is requested.`;
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+function showPage(id) {
+  // If not logged in, only bible/studies/ai land on app; redirect to login
+  if (!isLoggedIn && !['bible','studies'].includes(id)) {
+    openModal('loginModal'); return;
+  }
+  // Switch between landing and app.
+  // Logged-out visitors previewing bible/studies still need the app shell
+  // revealed, or the page content stays hidden behind landingPage.
+  const landing = document.getElementById('landingPage');
+  const app = document.getElementById('appShell');
+  landing.classList.remove('active');
+  app.style.display = 'flex';
+
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const page = document.getElementById('page-'+id);
+  if (page) page.classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const navBtn = document.getElementById('nav-'+id);
+  if (navBtn) navBtn.classList.add('active');
+
+  // Close mobile sidebar
+  document.getElementById('sidebar')?.classList.remove('open');
+  window.scrollTo(0,0);
+}
+
+function enterApp() {
+  isLoggedIn = true;
+  document.getElementById('landingPage').classList.remove('active');
+  document.getElementById('appShell').style.display = 'flex';
+  showPage('dashboard');
+  toast('Welcome to The Shepherd\'s Library ✓','✝');
+}
+
+function signOut() {
+  isLoggedIn = false;
+  document.getElementById('appShell').style.display = 'none';
+  document.getElementById('landingPage').classList.add('active');
+  toast('Signed out','⎋');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════
+// BIBLE READER
+// ═══════════════════════════════════════════════
+function initBible() {
+  const list = document.getElementById('bibleBooksList');
+  if (!list) return;
+  let html = '<div class="testament-divider">Old Testament</div>';
+  bibleBooks.OT.forEach(b => {
+    html += `<button class="book-btn" onclick="selectBook('${b.n}','OT',event)">${b.n}<span class="book-chapters-badge">${b.c}ch</span></button>`;
+  });
+  html += '<div class="testament-divider">New Testament</div>';
+  bibleBooks.NT.forEach(b => {
+    html += `<button class="book-btn${b.n==='John'?' active':''}" onclick="selectBook('${b.n}','NT',event)">${b.n}<span class="book-chapters-badge">${b.c}ch</span></button>`;
+  });
+  list.innerHTML = html;
+  renderChapter();
+}
+
+function selectBook(name, testament, ev) {
+  currentBook = name; currentChapter = 1; currentTestament = testament;
+  document.querySelectorAll('.book-btn').forEach(b=>b.classList.remove('active'));
+  (ev?.target || window.event?.target)?.classList.add('active');
+  renderChapter();
+}
+
+function renderChapter() {
+  document.getElementById('currentPassage').textContent = `${currentBook} ${currentChapter}`;
+  const area = document.getElementById('bibleTextArea');
+  if (!area) return;
+  let verses = currentBook === 'John' && currentChapter === 3 ? john3 : generateVerses(currentBook, currentChapter);
+  let html = `<div class="chapter-title">${currentBook} ${currentChapter}</div>`;
+  verses.forEach(v => {
+    html += `<div class="verse-row" data-v="${v.v}" onclick="selectVerse(this,${v.v})" oncontextmenu="return openVerseMenu(event,this,${v.v})">
+      <div class="verse-num">${v.v}</div>
+      <div class="verse-text">${v.t}</div>
+    </div>`;
+  });
+  area.innerHTML = html;
+}
+
+function generateVerses(book, chap) {
+  const pool = [
+    'The Lord is my shepherd; I shall not want.',
+    'Trust in the Lord with all thine heart; and lean not unto thine own understanding.',
+    'In all thy ways acknowledge him, and he shall direct thy paths.',
+    'I can do all things through Christ which strengtheneth me.',
+    'And we know that all things work together for good to them that love God.',
+    'For the wages of sin is death; but the gift of God is eternal life through Jesus Christ our Lord.',
+    'Therefore being justified by faith, we have peace with God through our Lord Jesus Christ.',
+    'There is therefore now no condemnation to them which are in Christ Jesus.',
+    'For I am persuaded, that neither death, nor life, nor angels, nor principalities, nor powers shall separate us from the love of God.',
+    'Now faith is the substance of things hoped for, the evidence of things not seen.',
+    'Jesus Christ the same yesterday, and to day, and for ever.',
+    'Draw nigh to God, and he will draw nigh to you.',
+    'Be sober, be vigilant; because your adversary the devil, as a roaring lion, walketh about, seeking whom he may devour.',
+    'Casting all your care upon him; for he careth for you.',
+    'Blessed are they that mourn: for they shall be comforted.',
+    'Blessed are the pure in heart: for they shall see God.',
+    'Let your light so shine before men, that they may see your good works.',
+    'But seek ye first the kingdom of God, and his righteousness; and all these things shall be added unto you.',
+  ];
+  return pool.slice(0, Math.min(18, pool.length)).map((t,i)=>({v:i+1,t}));
+}
+
+function filterBooks(val) {
+  document.querySelectorAll('.book-btn').forEach(b => {
+    b.style.display = b.textContent.toLowerCase().includes(val.toLowerCase()) ? '' : 'none';
+  });
+}
+
+function prevChapter() {
+  if (currentChapter > 1) { currentChapter--; renderChapter(); }
+}
+function nextChapter() {
+  const all = [...bibleBooks.OT,...bibleBooks.NT];
+  const book = all.find(b=>b.n===currentBook);
+  if (book && currentChapter < book.c) { currentChapter++; renderChapter(); }
+}
+
+let selectedVerseEl = null;
+function selectVerse(el, vnum) {
+  if (selectedVerseEl) selectedVerseEl.classList.remove('selected');
+  el.classList.add('selected');
+  selectedVerseEl = el;
+  selectedVerse = vnum;
+}
+
+function openVerseMenu(e, el, vnum) {
+  e.preventDefault();
+  selectVerse(el, vnum);
+  const menu = document.getElementById('verseMenu');
+  menu.style.left = Math.min(e.clientX, window.innerWidth-200) + 'px';
+  menu.style.top = Math.min(e.clientY, window.innerHeight-200) + 'px';
+  menu.classList.add('open');
+  document.addEventListener('click', closeMenu, {once:true});
+  return false;
+}
+
+function closeMenu() { document.getElementById('verseMenu').classList.remove('open'); }
+
+function highlightVerse(color) {
+  if (!selectedVerseEl) return;
+  selectedVerseEl.className = 'verse-row selected highlighted-'+color;
+  toast(`Verse highlighted`, '🎨'); closeMenu();
+}
+function removeHighlight() {
+  if (!selectedVerseEl) return;
+  selectedVerseEl.className = 'verse-row selected';
+  closeMenu();
+}
+function bookmarkVerse() { toast(`${currentBook} ${currentChapter}:${selectedVerse} bookmarked`, '🔖'); closeMenu(); }
+function copyVerse() {
+  const el = document.querySelector(`.verse-row[data-v="${selectedVerse}"] .verse-text`);
+  if (el) navigator.clipboard?.writeText(el.textContent + ` — ${currentBook} ${currentChapter}:${selectedVerse} KJV`);
+  toast('Verse copied', '📋'); closeMenu();
+}
+function studyVerse() {
+  askAI(`Do a deep theological study of ${currentBook} ${currentChapter}:${selectedVerse}. Include: (1) meaning in context, (2) Greek/Hebrew word study, (3) cross references, (4) historical context, (5) practical application.`);
+  showPage('ai'); closeMenu();
+}
+function toggleParallel() { toast('Parallel Bible view opened','⇄'); }
+function switchPanel(btn, id) {
+  document.querySelectorAll('.panel-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.panel-content').forEach(p=>p.classList.add('hidden'));
+  document.getElementById('panel-'+id)?.classList.remove('hidden');
+}
+function loadVerse(ref) { toast(`Loading ${ref}…`,'📖'); }
+function setTranslation(t) {
+  document.getElementById('currentTranslation').textContent = t;
+  closeModal('translationModal');
+  toast(`Switched to ${t}`,'📖');
+}
+
+// ═══════════════════════════════════════════════
+// AI ASSISTANT
+// ═══════════════════════════════════════════════
+async function sendMessage() {
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if (!text || aiThinking) return;
+  input.value = ''; input.style.height = 'auto';
+  await askAI(text);
+}
+
+async function askAI(prompt) {
+  if (aiThinking) return;
+  aiThinking = true;
+  const btn = document.getElementById('aiSendBtn');
+  if (btn) btn.style.opacity = '0.5';
+
+  const msgs = document.getElementById('aiMessages');
+  if (!msgs) { aiThinking=false; return; }
+  document.getElementById('aiInput') && (document.getElementById('aiInput').value='');
+
+  // Add user bubble
+  msgs.innerHTML += `<div class="msg msg-user"><div class="msg-avatar-sm">CG</div><div class="msg-bubble">${esc(prompt)}</div></div>`;
+
+  // Add thinking bubble
+  const thinkId = 'think_'+Date.now();
+  msgs.innerHTML += `<div class="msg msg-ai" id="${thinkId}"><div class="msg-avatar-sm">✝</div><div class="msg-bubble"><div class="thinking"><span></span><span></span><span></span></div></div></div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+
+  try {
+    const res = await fetch(AI_API_ENDPOINT, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6', max_tokens:1000,
+        system: systemPrompt,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    if (!res.ok) throw new Error('AI backend returned status ' + res.status);
+    const data = await res.json();
+    const text = (data.content||[]).map(c=>c.text||'').join('') || 'I was unable to respond. Please try again.';
+    const el = document.getElementById(thinkId);
+    if (el) el.querySelector('.msg-bubble').innerHTML = formatAI(text);
+  } catch(e) {
+    const el = document.getElementById(thinkId);
+    if (el) el.querySelector('.msg-bubble').innerHTML = '<em style="color:var(--ink-4)">Couldn\'t reach the AI backend. Make sure the proxy is deployed on Vercel and AI_API_ENDPOINT near the top of the script matches its real URL.</em>';
+  }
+
+  aiThinking = false;
+  if (btn) btn.style.opacity = '1';
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function formatAI(text) {
+  text = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  text = text.replace(/\*(.*?)\*/g,'<em>$1</em>');
+  // Highlight verse references
+  text = text.replace(/\(([1-3]?\s?[A-Z][a-zA-Z]+\.?\s+\d+:\d+(?:[-–]\d+)?(?:,\s*[A-Z][a-z]+\.?\s+\d+:\d+)*)\)/g,'<span style="color:var(--gold);font-weight:600;font-size:0.82em">($1)</span>');
+  text = text.replace(/\n\n+/g,'</p><p style="margin-top:0.7rem">');
+  return '<p>'+text+'</p>';
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function newConversation() {
+  const msgs = document.getElementById('aiMessages');
+  if (msgs) msgs.innerHTML = `<div class="msg msg-ai"><div class="msg-avatar-sm">✝</div><div class="msg-bubble"><strong>New conversation started.</strong> What would you like to study?</div></div>`;
+  toast('New conversation started','✨');
+}
+
+function clearChat() {
+  if (confirm('Clear this conversation?')) newConversation();
+}
+
+function loadConversation(el) {
+  document.querySelectorAll('.conversation-item').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  toast('Conversation loaded','💬');
+}
+
+// ═══════════════════════════════════════════════
+// SERMON BUILDER
+// ═══════════════════════════════════════════════
+let pointCount = 3;
+const romanNumerals = ['I','II','III','IV','V','VI','VII'];
+
+function addPoint() {
+  if (pointCount >= 7) { toast('Maximum 7 main points','⚠️'); return; }
+  const list = document.getElementById('mainPointsList');
+  const div = document.createElement('div');
+  div.className = 'main-point';
+  div.innerHTML = `<div class="point-num">${romanNumerals[pointCount]}</div><textarea class="point-input" placeholder="Add another main point…"></textarea>`;
+  list.appendChild(div);
+  pointCount++;
+}
+
+function aiHelp(section) {
+  const passage = document.getElementById('sermonScripture')?.value || 'John 15:1-17';
+  const prompts = {
+    introduction:`Write a compelling sermon introduction for a message on "${passage}". Include a hook, relatable illustration, and bridge to the text.`,
+    background:`Give the historical, cultural, and biblical background for ${passage} that a pastor can use in sermon preparation.`,
+    application:`Generate 5 practical application points for a sermon on ${passage} relevant to contemporary church life.`,
+    illustrations:`Give 3 sermon illustrations for a message on ${passage}. Include a historical example, a contemporary story, and a nature analogy.`,
+    greek:`Give Greek or Hebrew word studies for the key terms in ${passage} with Strong's numbers and theological significance.`,
+    questions:`Create 5 small-group discussion questions for a sermon on ${passage}.`,
+    prayer_points:`Create 5 pastoral prayer points for a sermon concluding prayer on ${passage}.`,
+  };
+  askAI(prompts[section] || `Help me with the ${section} section of my sermon on ${passage}`);
+  showPage('ai');
+}
+
+async function buildSermon() {
+  const prompt = document.getElementById('aiSermonPrompt')?.value.trim();
+  if (!prompt) { toast('Enter a passage or topic first','⚠️'); return; }
+  const passage = document.getElementById('sermonScripture').value = prompt;
+  await askAI(`Create a COMPLETE expository sermon outline on: ${prompt}
+
+Include all sections:
+TITLE: (compelling title)
+THEME: (central truth)
+SCRIPTURE: ${prompt}
+INTRODUCTION: (hook + bridge to text)
+BACKGROUND: (historical context)
+MAIN POINT I: (state clearly with Scripture reference and explanation)
+MAIN POINT II: (state clearly with Scripture reference and explanation)
+MAIN POINT III: (state clearly with Scripture reference and explanation)
+CROSS REFERENCES: (3-5 supporting passages)
+APPLICATION: (practical life application)
+CONCLUSION: (bring all points together)
+ALTAR CALL: (invitation for response)
+CLOSING PRAYER: (prayer points)`);
+  showPage('ai');
+}
+
+async function generateFullSermon() {
+  const title = document.getElementById('sermonTitle')?.value;
+  const scripture = document.getElementById('sermonScripture')?.value;
+  if (!scripture) { toast('Enter a Scripture passage first','⚠️'); return; }
+  await buildSermon();
+}
+
+function saveSermon() {
+  const title = document.getElementById('sermonTitle')?.value || 'Untitled Sermon';
+  toast(`"${title}" saved ✓`,'💾');
+}
+
+function loadSermon(id) {
+  const sermons = {
+    hs: {title:'The Promise of the Holy Spirit',scripture:'John 14:15-26',theme:'Christ promises the Comforter to those who love and obey Him.'},
+    faith: {title:'Unshakeable Faith',scripture:'Hebrews 11:1-40',theme:'Faith is the substance of things hoped for — a living, active, world-overcoming trust in God.'},
+    grace: {title:'Amazing Grace',scripture:'Ephesians 2:1-10',theme:'Salvation is entirely by grace through faith — God\'s gift, not our achievement.'},
+  };
+  const s = sermons[id];
+  if (!s) return;
+  document.getElementById('sermonTitle').value = s.title;
+  document.getElementById('sermonScripture').value = s.scripture;
+  document.getElementById('sermonTheme').value = s.theme;
+  toast(`"${s.title}" loaded`,'📂');
+}
+
+function addRef() {
+  const ref = prompt('Enter a Scripture reference:', 'Romans 8:28');
+  if (!ref) return;
+  const list = document.getElementById('refList');
+  const div = document.createElement('div');
+  div.className = 'ref-tag';
+  div.innerHTML = `<div><div class="ref-tag-label">${ref}</div><div class="ref-tag-text">Click to view in Bible reader</div></div><button class="ref-remove" onclick="this.closest('.ref-tag').remove()">✕</button>`;
+  list.appendChild(div);
+  toast(`${ref} added`,'🔗');
+}
+
+// ═══════════════════════════════════════════════
+// STUDIES
+// ═══════════════════════════════════════════════
+function initStudies() {
+  renderStudies(studiesData);
+}
+
+function renderStudies(data) {
+  const grid = document.getElementById('studiesGrid');
+  if (!grid) return;
+  grid.innerHTML = data.map(s => `
+    <div class="study-card card-hover" onclick="openStudy('${esc(s.title)}')">
+      <div class="study-card-top"></div>
+      <div class="study-card-body">
+        <div class="study-card-category">${s.cat}</div>
+        <h4>${s.title}</h4>
+        <p>${s.desc}</p>
+        <div class="study-card-meta"><span>~${s.min} min</span><span class="badge badge-gold">Open Study</span></div>
+      </div>
+    </div>`).join('');
+}
+
+function filterStudies(btn, cat) {
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  const filtered = cat === 'all' ? studiesData : studiesData.filter(s=>s.cat.toLowerCase().includes(cat)||s.title.toLowerCase().includes(cat));
+  renderStudies(filtered);
+}
+
+function openStudy(title) {
+  askAI(`Create a complete Bible study lesson on: "${title}"\n\nInclude:\n1. Overview & Introduction\n2. Key Scripture passages\n3. Historical and theological background\n4. Main teaching points with Scripture support\n5. Cross references\n6. Reflection questions (5 questions)\n7. Practical application\n8. Prayer\n9. Memory verse`);
+  showPage('ai');
+}
+
+// ═══════════════════════════════════════════════
+// LEXICON
+// ═══════════════════════════════════════════════
+function initLexicon() {
+  searchLexicon('');
+}
+
+function searchLexicon(val) {
+  const results = document.getElementById('lexiconResults');
+  if (!results) return;
+  const filtered = val ? lexiconData.filter(w=>
+    w.word.includes(val)||w.translit.toLowerCase().includes(val.toLowerCase())||
+    w.def.toLowerCase().includes(val.toLowerCase())||w.strongs.toLowerCase().includes(val.toLowerCase())
+  ) : lexiconData;
+
+  results.innerHTML = filtered.map((w,i)=>`
+    <div class="study-card card-hover" onclick="selectWord(${lexiconData.indexOf(w)})" style="cursor:pointer">
+      <div class="study-card-body" style="padding:0.85rem">
+        <div style="display:flex;align-items:center;gap:0.75rem">
+          <div style="font-size:1.6rem;color:var(--navy)">${w.word}</div>
+          <div><div style="font-size:0.8rem;font-weight:600;color:var(--ink-2)">${w.translit}</div><div style="font-size:0.72rem;color:var(--gold);font-weight:700">${w.strongs}</div></div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--ink-3);margin-top:0.4rem;line-height:1.4">${w.def.substring(0,80)}…</div>
+      </div>
+    </div>`).join('');
+}
+
+function selectWord(idx) {
+  const w = lexiconData[idx];
+  document.getElementById('lexWord').textContent = w.word;
+  document.getElementById('lexTranslit').textContent = `${w.translit} · ${w.pos}`;
+  document.getElementById('lexStrongs').textContent = w.strongs;
+  document.getElementById('lexPronun').textContent = w.pronun;
+  document.getElementById('lexDef').textContent = w.def;
+  document.getElementById('lexVerses').innerHTML = w.verses.map(v=>`<span class="badge badge-gold" style="cursor:pointer" onclick="loadVerse('${v}')">${v}</span>`).join('');
+  document.getElementById('lexiconDetail').querySelector('.widget-body button').onclick = ()=>askAI(`Do a complete word study on the ${w.translit.includes('ā')?'Greek':'Hebrew'} word ${w.word} (${w.strongs}), including etymology, morphology, all major NT/OT occurrences, and theological significance for preaching.`);
+}
+
+function switchLang(lang) {
+  currentLang = lang;
+  toast(`Switched to ${lang === 'greek' ? 'Greek (NT)' : 'Hebrew (OT)'}`, '🔤');
+}
+
+// ═══════════════════════════════════════════════
+// ADMIN
+// ═══════════════════════════════════════════════
+function initAdmin() {
+  const tbody = document.getElementById('adminTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = adminUsers.map(u=>`
+    <tr>
+      <td><strong>${u.name}</strong></td>
+      <td style="color:var(--ink-3)">${u.email}</td>
+      <td><span class="badge badge-navy">${u.role}</span></td>
+      <td><span class="badge badge-gold">${u.plan}</span></td>
+      <td style="color:var(--ink-3)">${u.joined}</td>
+      <td><span class="badge ${u.status==='Active'?'badge-sage':'badge-free'}">${u.status}</span></td>
+      <td><button class="btn btn-ghost btn-sm" onclick="toast('Managing ${u.name}','⚙️')">Manage</button></td>
+    </tr>`).join('');
+}
+
+function adminTab(btn, tab) {
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  toast(`Viewing ${tab}`,'📊');
+}
+
+// ═══════════════════════════════════════════════
+// PRAYER
+// ═══════════════════════════════════════════════
+function filterPrayer(btn, filter) {
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  toast(`Showing ${filter} prayers`,'🙏');
+}
+
+function aiPrayerPrompt(type) {
+  const prompts = {
+    morning: 'Write a Scripture-based morning prayer for a Christian leader, touching on surrender, wisdom, provision, and evangelism. Include at least 3 Scripture passages woven into the prayer.',
+    intercession: 'Create an intercession guide based on Ephesians 6:18-19 and 1 Timothy 2:1-4. Include: praying for leaders, for the lost, for the church, for missionaries, and for family.',
+    scripture: 'Help me pray through Psalm 23 verse by verse, turning each phrase into a personal prayer.'
+  };
+  askAI(prompts[type]);
+  showPage('ai');
+}
+
+// ═══════════════════════════════════════════════
+// MODALS
+// ═══════════════════════════════════════════════
+function openModal(id) {
+  document.getElementById(id)?.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id)?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('modal-backdrop')) {
+    e.target.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+});
+
+// ═══════════════════════════════════════════════
+// SUPABASE INTEGRATION
+// ═══════════════════════════════════════════════
+// Replace these two values with your Supabase project credentials:
+// Dashboard → Settings → API
+const SUPABASE_URL  = 'https://nxlxqxkvgktrbwhjpisi.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54bHhxeGt2Z2t0cmJ3aGpwaXNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3NTM3MDgsImV4cCI6MjA5ODMyOTcwOH0.nMYwFdNRC7ob7Lyeoe9YMXd_SlUZqxTIN7h6teXnRvY';
+
+let _sb = null;
+function sb() {
+  if (!_sb) {
+    if (typeof supabase === 'undefined') { console.error('Supabase SDK not loaded'); return null; }
+    _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  }
+  return _sb;
+}
+
+// ── Auth ────────────────────────────────────────
+async function doLogin() {
+  const email    = document.getElementById('loginEmail')?.value?.trim();
+  const password = document.getElementById('loginPassword')?.value;
+  if (!email || !password) { toast('Enter your email and password','⚠️'); return; }
+  const btn = document.querySelector('#loginModal .btn-primary');
+  if (btn) { btn.textContent = 'Signing in…'; btn.disabled = true; }
+  try {
+    const { data, error } = await sb().auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    closeModal('loginModal');
+    await onSignedIn(data.user);
+  } catch(e) {
+    toast(e.message || 'Sign-in failed','❌');
+  } finally {
+    if (btn) { btn.textContent = 'Sign In →'; btn.disabled = false; }
+  }
+}
+
+async function doSignup() {
+  const first    = document.getElementById('signupFirst')?.value?.trim();
+  const last     = document.getElementById('signupLast')?.value?.trim();
+  const email    = document.getElementById('signupEmail')?.value?.trim();
+  const password = document.getElementById('signupPassword')?.value;
+  const userType = document.getElementById('signupUserType')?.value;
+  if (!email || !password) { toast('Email and password are required','⚠️'); return; }
+  if (password.length < 6)  { toast('Password must be at least 6 characters','⚠️'); return; }
+  const btn = document.querySelector('#signupModal .btn-primary');
+  if (btn) { btn.textContent = 'Creating account…'; btn.disabled = true; }
+  try {
+    const { data, error } = await sb().auth.signUp({
+      email, password,
+      options: { data: { full_name: `${first} ${last}`.trim(), user_type: userType } }
+    });
+    if (error) throw error;
+    closeModal('signupModal');
+    toast('Account created! Check your email to confirm ✓','✝');
+    // Auto sign in if email confirmation not required
+    if (data.session) await onSignedIn(data.user);
+  } catch(e) {
+    toast(e.message || 'Sign-up failed','❌');
+  } finally {
+    if (btn) { btn.textContent = 'Create Free Account →'; btn.disabled = false; }
+  }
+}
+
+async function socialAuth(provider) {
+  try {
+    const { error } = await sb().auth.signInWithOAuth({
+      provider: provider.toLowerCase(),
+      options: { redirectTo: window.location.href }
+    });
+    if (error) throw error;
+  } catch(e) {
+    toast(e.message || `${provider} sign-in failed`,'❌');
+  }
+}
+
+async function signOut() {
+  await sb()?.auth.signOut();
+  isLoggedIn = false;
+  currentUser = null;
+  document.getElementById('appShell').style.display = 'none';
+  document.getElementById('landingPage').classList.add('active');
+  toast('Signed out','⎋');
+}
+
+async function onSignedIn(user) {
+  currentUser = user;
+  isLoggedIn  = true;
+  // Load profile from Supabase
+  const { data: profile } = await sb().from('profiles').select('*').eq('id', user.id).single();
+  if (profile) {
+    // Update sidebar name & avatar
+    const name = profile.display_name || profile.full_name || user.email.split('@')[0];
+    const initials = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+    document.getElementById('userInitials').textContent = initials;
+    document.getElementById('topbarAvatar').textContent = initials;
+    document.getElementById('userName').textContent = name;
+    document.getElementById('userPlan').textContent = (profile.subscription_tier||'free').charAt(0).toUpperCase()+(profile.subscription_tier||'free').slice(1)+' Plan';
     // Update welcome greeting
     const hour = new Date().getHours();
     const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
