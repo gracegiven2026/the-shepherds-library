@@ -2075,12 +2075,12 @@ h4 { font-size: 1.05rem; font-weight: 600; }
       <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem"><div class="divider" style="margin:0;flex:1"></div><span style="font-size:0.75rem;color:var(--ink-4)">or create account</span><div class="divider" style="margin:0;flex:1"></div></div>
       <div style="display:flex;flex-direction:column;gap:0.85rem">
         <div class="form-row">
-          <div class="form-group"><label class="form-label">First Name</label><input class="form-input" placeholder="First"></div>
-          <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" placeholder="Last"></div>
+          <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="signupFirst" placeholder="First"></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" id="signupLast" placeholder="Last"></div>
         </div>
-        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@example.com"></div>
-        <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="Create a password"></div>
-        <div class="form-group"><label class="form-label">I am a…</label><select class="form-input form-select"><option>General Believer</option><option>Pastor / Minister</option><option>Bible Teacher</option><option>Seminary Student</option><option>New Believer</option><option>Seeker</option></select></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="signupEmail" placeholder="you@example.com"></div>
+        <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" id="signupPassword" placeholder="Create a password"></div>
+        <div class="form-group"><label class="form-label">I am a…</label><select class="form-input form-select" id="signupUserType"><option>General Believer</option><option>Pastor / Minister</option><option>Bible Teacher</option><option>Seminary Student</option><option>New Believer</option><option>Seeker</option></select></div>
         <button class="btn btn-primary btn-full" onclick="doSignup()">Create Free Account →</button>
         <div style="text-align:center;font-size:0.75rem;color:var(--ink-4)">By creating an account you agree to our <a href="#" style="color:var(--gold)">Terms</a> and <a href="#" style="color:var(--gold)">Privacy Policy</a></div>
       </div>
@@ -2822,8 +2822,8 @@ function sb() {
 }
 
 async function doLogin() {
-  const email = document.getElementById('loginEmail')?.value?.trim();
-  const password = document.getElementById('loginPassword')?.value;
+  const email = (document.getElementById('loginEmail') || document.querySelector('#loginModal input[type="email"]'))?.value?.trim();
+  const password = (document.getElementById('loginPassword') || document.querySelector('#loginModal input[type="password"]'))?.value;
   if (!email || !password) { toast('Enter your email and password','⚠️'); return; }
   const btn = document.querySelector('#loginModal .btn-primary');
   if (btn) { btn.textContent = 'Signing in…'; btn.disabled = true; }
@@ -2840,11 +2840,11 @@ async function doLogin() {
 }
 
 async function doSignup() {
-  const first = document.getElementById('signupFirst')?.value?.trim();
-  const last  = document.getElementById('signupLast')?.value?.trim();
-  const email = document.getElementById('signupEmail')?.value?.trim();
-  const password = document.getElementById('signupPassword')?.value;
-  const userType = document.getElementById('signupUserType')?.value;
+  const first = (document.getElementById('signupFirst') || document.querySelector('#signupModal input[placeholder="First"]'))?.value?.trim();
+  const last  = (document.getElementById('signupLast')  || document.querySelector('#signupModal input[placeholder="Last"]'))?.value?.trim();
+  const email = (document.getElementById('signupEmail') || document.querySelector('#signupModal input[type="email"]'))?.value?.trim();
+  const password = (document.getElementById('signupPassword') || document.querySelector('#signupModal input[type="password"]'))?.value;
+  const userType = (document.getElementById('signupUserType') || document.querySelector('#signupModal select'))?.value;
   if (!email || !password) { toast('Email and password are required','⚠️'); return; }
   if (password.length < 6) { toast('Password must be at least 6 characters','⚠️'); return; }
   const btn = document.querySelector('#signupModal .btn-primary');
