@@ -7,6 +7,7 @@
 <meta name="description" content="The complete SaaS platform for Bible study, sermon preparation, and spiritual growth.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 /* ═══════════════════════════════════════════════
    DESIGN TOKENS
@@ -2088,12 +2089,12 @@ h4 { font-size: 1.05rem; font-weight: 600; }
       <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem"><div class="divider" style="margin:0;flex:1"></div><span style="font-size:0.75rem;color:var(--ink-4)">or create account</span><div class="divider" style="margin:0;flex:1"></div></div>
       <div style="display:flex;flex-direction:column;gap:0.85rem">
         <div class="form-row">
-          <div class="form-group"><label class="form-label">First Name</label><input class="form-input" placeholder="First"></div>
-          <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" placeholder="Last"></div>
+          <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="signupFirst" placeholder="First"></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" id="signupLast" placeholder="Last"></div>
         </div>
-        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@example.com"></div>
-        <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="Create a password"></div>
-        <div class="form-group"><label class="form-label">I am a…</label><select class="form-input form-select"><option>General Believer</option><option>Pastor / Minister</option><option>Bible Teacher</option><option>Seminary Student</option><option>New Believer</option><option>Seeker</option></select></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="signupEmail" placeholder="you@example.com"></div>
+        <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" id="signupPassword" placeholder="Create a password"></div>
+        <div class="form-group"><label class="form-label">I am a…</label><select class="form-input form-select" id="signupUserType"><option>General Believer</option><option>Pastor / Minister</option><option>Bible Teacher</option><option>Seminary Student</option><option>New Believer</option><option>Seeker</option></select></div>
         <button class="btn btn-primary btn-full" onclick="doSignup()">Create Free Account →</button>
         <div style="text-align:center;font-size:0.75rem;color:var(--ink-4)">By creating an account you agree to our <a href="#" style="color:var(--gold)">Terms</a> and <a href="#" style="color:var(--gold)">Privacy Policy</a></div>
       </div>
@@ -2110,7 +2111,7 @@ h4 { font-size: 1.05rem; font-weight: 600; }
         <div class="form-group"><label class="form-label">Scripture Reference</label><input class="form-input" value="John 3:16"></div>
         <div class="form-group"><label class="form-label">Note</label><textarea class="form-input form-textarea" placeholder="Write your note…" rows="5"></textarea></div>
         <div class="form-group"><label class="form-label">Tags</label><input class="form-input" placeholder="gospel, grace, love…"></div>
-        <button class="btn btn-primary btn-full" onclick="closeModal('noteModal');toast('Note saved ✓','📝')">Save Note</button>
+        <button class="btn btn-primary btn-full" onclick="saveNote()">Save Note</button>
       </div>
     </div>
   </div>
@@ -2126,7 +2127,7 @@ h4 { font-size: 1.05rem; font-weight: 600; }
         <div class="form-group"><label class="form-label">Category</label><select class="form-input form-select"><option>Health & Healing</option><option>Family</option><option>Ministry</option><option>Financial</option><option>Spiritual Growth</option><option>Guidance</option><option>Other</option></select></div>
         <div class="form-group"><label class="form-label">Prayer</label><textarea class="form-input form-textarea" placeholder="Write your prayer…" rows="6"></textarea></div>
         <div class="form-group"><label class="form-label">Scripture (optional)</label><input class="form-input" placeholder="e.g. Philippians 4:6"></div>
-        <button class="btn btn-primary btn-full" onclick="closeModal('newPrayerModal');toast('Prayer entry saved 🙏','')">Save Prayer Entry</button>
+        <button class="btn btn-primary btn-full" onclick="savePrayer()">Save Prayer Entry</button>
       </div>
     </div>
   </div>
@@ -2300,7 +2301,7 @@ const adminUsers = [
 let currentBook = 'John'; let currentChapter = 3;
 let currentTestament = 'NT'; let isLoggedIn = false;
 let aiThinking = false; let selectedVerse = null;
-let currentLang = 'greek';
+let currentLang = 'greek'; let currentUser = null;
 
 // ───────────────────────────────────────────────────────────────
 // IMPORTANT — AI BACKEND CONFIGURATION
@@ -2311,7 +2312,7 @@ let currentLang = 'greek';
 // replace the placeholder URL below with your real one, e.g.
 // 'https://shepherds-library-proxy.vercel.app/api/ai'
 // ───────────────────────────────────────────────────────────────
-const AI_API_ENDPOINT = 'https://shepherds-library-proxy.vercel.app/api/ai'; // ← replace YOUR-PROJECT-NAME once deployed
+const AI_API_ENDPOINT = 'https://the-shepherds-library.vercel.app/api/ai'; // Vercel proxy
 
 const systemPrompt = `You are the Berean AI — a biblically grounded Bible study assistant for "The Shepherd's Library" platform.
 
@@ -2817,21 +2818,267 @@ document.addEventListener('click', e => {
   }
 });
 
-function socialAuth(provider) {
-  closeModal('loginModal'); closeModal('signupModal');
-  enterApp();
+// ═══════════════════════════════════════════════
+// SUPABASE INTEGRATION
+// ═══════════════════════════════════════════════
+// Replace these two values with your Supabase project credentials:
+// Dashboard → Settings → API
+const SUPABASE_URL  = 'https://YOUR-PROJECT-ID.supabase.co';
+const SUPABASE_ANON = 'YOUR-ANON-KEY';
+
+let _sb = null;
+function sb() {
+  if (!_sb) {
+    if (typeof supabase === 'undefined') { console.error('Supabase SDK not loaded'); return null; }
+    _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  }
+  return _sb;
 }
 
-function doLogin() {
-  const email = document.getElementById('loginEmail')?.value;
-  if (!email) { toast('Enter your email','⚠️'); return; }
-  closeModal('loginModal');
-  enterApp();
+// ── Auth ────────────────────────────────────────
+async function doLogin() {
+  const email    = document.getElementById('loginEmail')?.value?.trim();
+  const password = document.getElementById('loginPassword')?.value;
+  if (!email || !password) { toast('Enter your email and password','⚠️'); return; }
+  const btn = document.querySelector('#loginModal .btn-primary');
+  if (btn) { btn.textContent = 'Signing in…'; btn.disabled = true; }
+  try {
+    const { data, error } = await sb().auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    closeModal('loginModal');
+    await onSignedIn(data.user);
+  } catch(e) {
+    toast(e.message || 'Sign-in failed','❌');
+  } finally {
+    if (btn) { btn.textContent = 'Sign In →'; btn.disabled = false; }
+  }
 }
 
-function doSignup() {
-  closeModal('signupModal');
-  enterApp();
+async function doSignup() {
+  const first    = document.getElementById('signupFirst')?.value?.trim();
+  const last     = document.getElementById('signupLast')?.value?.trim();
+  const email    = document.getElementById('signupEmail')?.value?.trim();
+  const password = document.getElementById('signupPassword')?.value;
+  const userType = document.getElementById('signupUserType')?.value;
+  if (!email || !password) { toast('Email and password are required','⚠️'); return; }
+  if (password.length < 6)  { toast('Password must be at least 6 characters','⚠️'); return; }
+  const btn = document.querySelector('#signupModal .btn-primary');
+  if (btn) { btn.textContent = 'Creating account…'; btn.disabled = true; }
+  try {
+    const { data, error } = await sb().auth.signUp({
+      email, password,
+      options: { data: { full_name: `${first} ${last}`.trim(), user_type: userType } }
+    });
+    if (error) throw error;
+    closeModal('signupModal');
+    toast('Account created! Check your email to confirm ✓','✝');
+    // Auto sign in if email confirmation not required
+    if (data.session) await onSignedIn(data.user);
+  } catch(e) {
+    toast(e.message || 'Sign-up failed','❌');
+  } finally {
+    if (btn) { btn.textContent = 'Create Free Account →'; btn.disabled = false; }
+  }
+}
+
+async function socialAuth(provider) {
+  try {
+    const { error } = await sb().auth.signInWithOAuth({
+      provider: provider.toLowerCase(),
+      options: { redirectTo: window.location.href }
+    });
+    if (error) throw error;
+  } catch(e) {
+    toast(e.message || `${provider} sign-in failed`,'❌');
+  }
+}
+
+async function signOut() {
+  await sb()?.auth.signOut();
+  isLoggedIn = false;
+  currentUser = null;
+  document.getElementById('appShell').style.display = 'none';
+  document.getElementById('landingPage').classList.add('active');
+  toast('Signed out','⎋');
+}
+
+async function onSignedIn(user) {
+  currentUser = user;
+  isLoggedIn  = true;
+  // Load profile from Supabase
+  const { data: profile } = await sb().from('profiles').select('*').eq('id', user.id).single();
+  if (profile) {
+    // Update sidebar name & avatar
+    const name = profile.display_name || profile.full_name || user.email.split('@')[0];
+    const initials = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+    document.querySelectorAll('.sidebar-user .user-name, [style*="user-name"]').forEach(el=>{ if(el.textContent.includes('Cyrus') || el.classList.contains('user-name')) el.textContent = name; });
+    document.querySelectorAll('.user-avatar').forEach(el=>el.textContent = initials);
+    document.querySelectorAll('.sidebar-user-plan').forEach(el=>el.textContent = (profile.subscription_tier||'free').charAt(0).toUpperCase()+(profile.subscription_tier||'free').slice(1)+' Plan · Active');
+    // Update welcome greeting
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    const title = profile.ministry_title ? `, ${profile.ministry_title}` : '';
+    const firstName = (profile.full_name||name).split(' ')[0];
+    document.querySelectorAll('.dashboard-greeting').forEach(el=>el.textContent = `${greeting}${title} ${firstName} ☀️`);
+    // Load dashboard stats
+    loadDashboardStats(user.id);
+  }
+  document.getElementById('landingPage').classList.remove('active');
+  document.getElementById('appShell').style.display = 'flex';
+  showPage('dashboard');
+  toast('Welcome back ✓','✝');
+}
+
+// Check for existing session on page load
+async function initAuth() {
+  if (!sb()) return;
+  // Handle OAuth redirects
+  const { data: { session } } = await sb().auth.getSession();
+  if (session?.user) {
+    await onSignedIn(session.user);
+  }
+  // Listen for auth changes (e.g. after email confirmation)
+  sb().auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session?.user && !isLoggedIn) {
+      await onSignedIn(session.user);
+    }
+    if (event === 'SIGNED_OUT') {
+      isLoggedIn = false;
+      currentUser = null;
+    }
+  });
+}
+
+// ── Dashboard Stats ─────────────────────────────
+async function loadDashboardStats(userId) {
+  if (!userId) return;
+  try {
+    const [notes, sermons, prayers, streak] = await Promise.all([
+      sb().from('user_notes').select('id', {count:'exact',head:true}).eq('user_id', userId),
+      sb().from('sermon_outlines').select('id', {count:'exact',head:true}).eq('user_id', userId),
+      sb().from('prayer_journal_entries').select('id', {count:'exact',head:true}).eq('user_id', userId),
+      sb().from('user_reading_streaks').select('current_streak,total_read_days').eq('user_id', userId).single()
+    ]);
+    document.querySelectorAll('.stat-sermons').forEach(el=>el.textContent = sermons.count ?? 0);
+    document.querySelectorAll('.stat-prayers').forEach(el=>el.textContent = prayers.count ?? 0);
+    document.querySelectorAll('.stat-streak').forEach(el=>el.textContent = (streak.data?.current_streak ?? 0));
+  } catch(e) { /* non-fatal */ }
+}
+
+// ── Notes ────────────────────────────────────────
+async function saveNote() {
+  if (!currentUser) { openModal('loginModal'); return; }
+  const scripture = document.querySelector('#noteModal .form-input[value]')?.value
+    || document.querySelector('#noteModal input[placeholder*="cripture"]')?.value || '';
+  const content   = document.querySelector('#noteModal textarea')?.value?.trim();
+  const tags      = document.querySelector('#noteModal input[placeholder*="tag"]')?.value || '';
+  if (!content) { toast('Write something first','⚠️'); return; }
+  const { error } = await sb().from('user_notes').insert({
+    user_id: currentUser.id,
+    scripture,
+    content,
+    tags: tags ? tags.split(',').map(t=>t.trim()) : [],
+    note_type: 'bible'
+  });
+  if (error) { toast('Could not save note','❌'); return; }
+  closeModal('noteModal');
+  toast('Note saved ✓','📝');
+}
+
+// ── Prayer Journal ───────────────────────────────
+async function savePrayer() {
+  if (!currentUser) { openModal('loginModal'); return; }
+  const title    = document.querySelector('#newPrayerModal input[placeholder*="itle"]')?.value?.trim();
+  const content  = document.querySelector('#newPrayerModal textarea')?.value?.trim();
+  const category = document.querySelector('#newPrayerModal select')?.value || 'other';
+  const scripture= document.querySelector('#newPrayerModal input[placeholder*="cripture"]')?.value?.trim() || null;
+  if (!content) { toast('Write your prayer first','⚠️'); return; }
+  const cat = category.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z_]/g,'');
+  const { error } = await sb().from('prayer_journal_entries').insert({
+    user_id: currentUser.id,
+    title: title || null,
+    content,
+    category: cat || 'other',
+    scripture
+  });
+  if (error) { toast('Could not save prayer','❌'); return; }
+  closeModal('newPrayerModal');
+  toast('Prayer saved ✓','🙏');
+  loadPrayers();
+}
+
+async function loadPrayers() {
+  if (!currentUser) return;
+  const { data } = await sb().from('prayer_journal_entries')
+    .select('*').eq('user_id', currentUser.id)
+    .order('created_at', {ascending: false}).limit(10);
+  if (!data?.length) return;
+  const list = document.getElementById('prayerList');
+  if (!list) return;
+  list.innerHTML = data.map(p => `
+    <div class="prayer-item${p.is_answered?' answered':''}">
+      <div class="prayer-item-header">
+        <span class="prayer-title">${p.title || p.content.slice(0,40)}…</span>
+        ${p.is_answered ? '<span class="badge badge-gold">Answered ✓</span>' : ''}
+      </div>
+      <div class="prayer-meta">${new Date(p.created_at).toLocaleDateString()}</div>
+      <div class="prayer-preview">"${p.content.slice(0,120)}…"</div>
+    </div>`).join('');
+}
+
+// ── Sermons ──────────────────────────────────────
+async function saveSermon() {
+  if (!currentUser) { openModal('loginModal'); return; }
+  const title     = document.getElementById('sermonTitle')?.value?.trim();
+  const scripture = document.getElementById('sermonScripture')?.value?.trim();
+  const intro     = document.getElementById('sermonIntro')?.value?.trim();
+  const conclusion= document.getElementById('sermonConclusion')?.value?.trim();
+  const prayer    = document.getElementById('sermonPrayer')?.value?.trim();
+  if (!title || !scripture) { toast('Add a title and scripture first','⚠️'); return; }
+  const { error } = await sb().from('sermon_outlines').insert({
+    user_id: currentUser.id,
+    title,
+    primary_scripture: scripture,
+    introduction: intro,
+    conclusion,
+    prayer,
+    status: 'draft'
+  });
+  if (error) { toast('Could not save sermon','❌'); return; }
+  toast('Sermon saved ✓','🎤');
+}
+
+// ── Bookmarks ────────────────────────────────────
+async function saveBookmark(bookId, chapter, verse, label) {
+  if (!currentUser) { openModal('loginModal'); return; }
+  await sb().from('user_bookmarks').upsert({
+    user_id: currentUser.id,
+    bookmark_type: 'verse',
+    book_id: bookId,
+    chapter_number: chapter,
+    verse_number: verse,
+    label: label || null
+  }, { onConflict: 'user_id,bookmark_type,book_id,chapter_number,verse_number' });
+  toast('Bookmarked ✓','🔖');
+}
+
+// ── Reading History ───────────────────────────────
+async function trackReading(bookId, chapter) {
+  if (!currentUser) return;
+  await sb().from('user_reading_history').insert({
+    user_id: currentUser.id,
+    book_id: bookId,
+    chapter_number: chapter
+  });
+}
+
+function enterApp() {
+  // Kept for backward-compat with any remaining onclick references
+  // Real entry now goes through onSignedIn()
+  if (!isLoggedIn) { openModal('loginModal'); return; }
+  document.getElementById('landingPage').classList.remove('active');
+  document.getElementById('appShell').style.display = 'flex';
+  showPage('dashboard');
 }
 
 // ═══════════════════════════════════════════════
@@ -2884,6 +3131,7 @@ function setDevDate() {
 // ═══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   initBible();
+  initAuth(); // restore Supabase session if user was already signed in
   initStudies();
   initLexicon();
   initAdmin();
