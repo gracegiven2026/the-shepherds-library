@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sermon Builder · The Shepherd's Library</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+<style>
+  :root{
+    --purple:#5b21b6;
+    --purple-dark:#4c1d95;
+    --purple-light:#ede9fe;
+    --gold:#d4af37;
+    --bg:#f7f6fb;
+    --text:#1f1a2e;
+    --muted:#6b6478;
+    --border:#e3dff0;
+    --danger:#c0392b;
+    --radius:12px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+  }
+  header{
+    background:linear-gradient(135deg,var(--purple),var(--purple-dark));
+    color:#fff;
+    padding:20px 32px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  header h1{margin:0;font-size:1.4rem;font-weight:600;}
+  header h1 span{color:var(--gold);}
+  #userBadge{font-size:0.85rem;opacity:0.85;}
+
+  .layout{display:flex;min-height:calc(100vh - 68px);}
+  .sidebar{
+    width:280px;
+    background:#fff;
+    border-right:1px solid var(--border);
+    padding:20px;
+  }
+  .sidebar h2{font-size:0.95rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--muted);margin:0 0 12px;}
+  .series-item{
+    padding:10px 12px;border-radius:8px;cursor:pointer;margin-bottom:6px;
+    display:flex;align-items:center;gap:8px;font-size:0.92rem;
+  }
+  .series-item:hover{background:var(--purple-light);}
+  .series-item.active{background:var(--purple-light);font-weight:600;}
+  .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+  .btn{
+    border:none;border-radius:8px;padding:9px 16px;font-size:0.88rem;
+    cursor:pointer;font-weight:600;transition:opacity .15s;
+  }
+  .btn:hover{opacity:0.88;}
+  .btn-primary{background:var(--purple);color:#fff;}
+  .btn-gold{background:var(--gold);color:#3a2e05;}
+  .btn-ghost{background:transparent;color:var(--purple);border:1px solid var(--purple);}
+  .btn-danger{background:transparent;color:var(--danger);border:1px solid var(--danger);}
+  .btn-sm{padding:5px 10px;font-size:0.78rem;}
+  .btn-block{width:100%;margin-top:8px;}
+
+  main{flex:1;padding:28px 36px;}
+  .sermon-list{display:grid;gap:12px;margin-bottom:28px;}
+  .sermon-card{
+    background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+    padding:16px 18px;display:flex;justify-content:space-between;align-items:center;
+    cursor:pointer;
+  }
+  .sermon-card:hover{border-color:var(--purple);}
+  .sermon-card h3{margin:0 0 4px;font-size:1.02rem;}
+  .sermon-card p{margin:0;font-size:0.82rem;color:var(--muted);}
+  .status-pill{
+    font-size:0.72rem;font-weight:700;padding:3px 10px;border-radius:999px;
+    text-transform:uppercase;letter-spacing:0.03em;
+  }
+  .status-draft{background:#f0edf5;color:var(--muted);}
+  .status-ready{background:#fff3cd;color:#8a6d00;}
+  .status-preached{background:#d4edda;color:#1e6b34;}
+  .status-archived{background:#f1f1f1;color:#999;}
+
+  .panel{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;color:var(--muted);}
+  .field input, .field textarea, .field select{
+    width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;
+    font-size:0.92rem;font-family:inherit;
+  }
+  .field textarea{resize:vertical;min-height:60px;}
+  .row{display:flex;gap:14px;}
+  .row > .field{flex:1;}
+
+  .outline-point{
+    border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;
+    background:#fcfbff;
+  }
+  .outline-point-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .outline-point-head .tag{
+    font-size:0.7rem;font-weight:700;text-transform:uppercase;color:var(--purple);
+    background:var(--purple-light);padding:2px 8px;border-radius:6px;
+  }
+  .point-controls button{background:none;border:none;cursor:pointer;color:var(--muted);font-size:0.9rem;padding:2px 5px;}
+  .point-controls button:hover{color:var(--purple);}
+
+  .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+  .empty-state{text-align:center;color:var(--muted);padding:60px 20px;}
+  .hidden{display:none !important;}
+  #authGate{
+    max-width:380px;margin:80px auto;background:#fff;border:1px solid var(--border);
+    border-radius:var(--radius);padding:32px;text-align:center;
+  }
+  .spinner{
+    width:16px;height:16px;border:2px solid #fff;border-top-color:transparent;
+    border-radius:50%;display:inline-block;animation:spin .7s linear infinite;vertical-align:middle;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .toast{
+    position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;
+    padding:12px 18px;border-radius:8px;font-size:0.86rem;box-shadow:0 4px 14px rgba(0,0,0,0.2);
+    opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;
+  }
+  .toast.show{opacity:1;transform:translateY(0);}
+  .toast.error{background:var(--danger);}
+</style>
+</head>
+<body>
+
+<div id="authGate">
+  <h2>Sermon Builder</h2>
+  <p style="color:var(--muted);font-size:0.9rem;">Sign in to The Shepherd's Library to continue.</p>
+  <p style="font-size:0.8rem;color:var(--muted);">This page expects an existing Supabase session (set via your main login page). If you landed here directly, <a href="/login.html">sign in first</a>.</p>
+</div>
+
+<div id="app" class="hidden">
+  <header>
+    <h1>Sermon <span>Builder</span></h1>
+    <div id="userBadge"></div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Series</h2>
+      <div id="seriesList"></div>
+      <button class="btn btn-ghost btn-block" id="newSeriesBtn">+ New Series</button>
+      <div style="margin-top:24px;">
+        <div class="series-item active" id="allSermonsFilter" data-series="all">
+          <span class="dot" style="background:var(--muted);"></span> All Sermons
+        </div>
+      </div>
+    </aside>
+
+    <main>
+      <div id="listView">
+        <div class="toolbar">
+          <h2 id="listTitle" style="margin:0;">All Sermons</h2>
+          <button class="btn btn-primary" id="newSermonBtn">+ New Sermon</button>
+        </div>
+        <div class="sermon-list" id="sermonList"></div>
+        <div class="empty-state hidden" id="emptyState">No sermons yet. Start your first outline above.</div>
+      </div>
+
+      <div id="editorView" class="hidden">
+        <div class="toolbar">
+          <button class="btn btn-ghost btn-sm" id="backBtn">&larr; Back to list</button>
+          <div>
+            <button class="btn btn-danger btn-sm" id="deleteSermonBtn">Delete</button>
+            <button class="btn btn-primary" id="saveSermonBtn">Save</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="row">
+            <div class="field" style="flex:2;">
+              <label>Sermon Title</label>
+              <input type="text" id="sermonTitle" placeholder="e.g. The Weight of Grace" />
+            </div>
+            <div class="field">
+              <label>Status</label>
+              <select id="sermonStatus">
+                <option value="draft">Draft</option>
+                <option value="ready">Ready</option>
+                <option value="preached">Preached</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label>Primary Scripture</label>
+              <input type="text" id="sermonScripture" placeholder="e.g. Romans 8:28-30" />
+            </div>
+            <div class="field">
+              <label>Preach Date</label>
+              <input type="date" id="sermonDate" />
+            </div>
+            <div class="field">
+              <label>Series</label>
+              <select id="sermonSeries"><option value="">— None —</option></select>
+            </div>
+          </div>
+          <div class="field">
+            <label>Big Idea / Thesis</label>
+            <textarea id="sermonBigIdea" placeholder="The single sentence this sermon exists to prove or apply."></textarea>
+          </div>
+
+          <hr style="border:none;border-top:1px solid var(--border);margin:22px 0;" />
+
+          <div class="toolbar">
+            <h3 style="margin:0;">Outline</h3>
+            <div>
+              <button class="btn btn-gold btn-sm" id="aiAssistBtn">✨ AI Assist</button>
+              <button class="btn btn-ghost btn-sm" id="addPointBtn">+ Add Point</button>
+            </div>
+          </div>
+          <div id="outlinePoints"></div>
+
+          <div class="field" style="margin-top:20px;">
+            <label>Notes</label>
+            <textarea id="sermonNotes" placeholder="Illustrations to find, transitions, delivery reminders..."></textarea>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIG — replace with your project values (same ones used
+   on your existing Supabase-wired pages / auth.js).
+   ============================================================ */
+const SUPABASE_URL = "YOUR_SUPABASE_URL";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+// Your existing Vercel Edge Function AI proxy (Berean AI) endpoint.
+// Expected contract: POST { prompt: string } -> { text: string }
+const AI_PROXY_ENDPOINT = "/api/ai-proxy";
+
+const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentUser = null;
+let series = [];
+let sermons = [];
+let activeSeriesFilter = "all";
+let activeSermon = null;      // full sermon row being edited
+let outlinePoints = [];       // points for activeSermon
+let deletedPointIds = [];     // track removals to sync on save
+
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+
+function showToast(msg, isError=false){
+  const t = $("#toast");
+  t.textContent = msg;
+  t.className = "toast show" + (isError ? " error" : "");
+  setTimeout(()=> t.classList.remove("show"), 2600);
+}
+
+/* ---------------- Auth bootstrap ---------------- */
+async function init(){
+  const { data: { session } } = await sbClient.auth.getSession();
+  if(!session){
+    $("#authGate").classList.remove("hidden");
+    $("#app").classList.add("hidden");
+    return;
+  }
+  currentUser = session.user;
+  $("#authGate").classList.add("hidden");
+  $("#app").classList.remove("hidden");
+  $("#userBadge").textContent = currentUser.email || "";
+
+  await loadSeries();
+  await loadSermons();
+  render();
+}
+
+sbClient.auth.onAuthStateChange((_event, session) => {
+  if(session) init();
+});
+
+/* ---------------- Data loading ---------------- */
+async function loadSeries(){
+  const { data, error } = await sbClient
+    .from("sermon_series")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if(error){ showToast("Failed to load series: " + error.message, true); return; }
+  series = data || [];
+}
+
+async function loadSermons(){
+  const { data, error } = await sbClient
+    .from("sermons")
+    .select("*")
+    .order("updated_at", { ascending: false });
+  if(error){ showToast("Failed to load sermons: " + error.message, true); return; }
+  sermons = data || [];
+}
+
+async function loadOutlinePoints(sermonId){
+  const { data, error } = await sbClient
+    .from("sermon_outline_points")
+    .select("*")
+    .eq("sermon_id", sermonId)
+    .order("order_index", { ascending: true });
+  if(error){ showToast("Failed to load outline: " + error.message, true); return []; }
+  return data || [];
+}
+
+/* ---------------- Rendering: sidebar + list ---------------- */
+function render(){
+  renderSeriesList();
+  renderSermonList();
+  populateSeriesSelect();
+}
+
+function renderSeriesList(){
+  const el = $("#seriesList");
+  el.innerHTML = "";
+  series.forEach(s => {
+    const div = document.createElement("div");
+    div.className = "series-item" + (activeSeriesFilter === s.id ? " active" : "");
+    div.dataset.series = s.id;
+    div.innerHTML = `<span class="dot" style="background:${s.color || '#5b21b6'}"></span> ${escapeHtml(s.title)}`;
+    div.onclick = () => { activeSeriesFilter = s.id; refreshFilterUI(); };
+    el.appendChild(div);
+  });
+}
+
+function refreshFilterUI(){
+  $$(".series-item").forEach(el => el.classList.remove("active"));
+  const match = document.querySelector(`.series-item[data-series="${activeSeriesFilter}"]`);
+  if(match) match.classList.add("active");
+  $("#listTitle").textContent = activeSeriesFilter === "all"
+    ? "All Sermons"
+    : (series.find(s => s.id === activeSeriesFilter)?.title || "Sermons");
+  renderSermonList();
+}
+
+$("#allSermonsFilter").onclick = () => { activeSeriesFilter = "all"; refreshFilterUI(); };
+
+function renderSermonList(){
+  const el = $("#sermonList");
+  el.innerHTML = "";
+  const filtered = activeSeriesFilter === "all"
+    ? sermons
+    : sermons.filter(s => s.series_id === activeSeriesFilter);
+
+  $("#emptyState").classList.toggle("hidden", filtered.length !== 0);
+
+  filtered.forEach(s => {
+    const card = document.createElement("div");
+    card.className = "sermon-card";
+    card.innerHTML = `
+      <div>
+        <h3>${escapeHtml(s.title || "Untitled Sermon")}</h3>
+        <p>${escapeHtml(s.scripture_reference || "No scripture reference")} ${s.preach_date ? "· " + s.preach_date : ""}</p>
+      </div>
+      <span class="status-pill status-${s.status}">${s.status}</span>
+    `;
+    card.onclick = () => openSermon(s.id);
+    el.appendChild(card);
+  });
+}
+
+function populateSeriesSelect(){
+  const sel = $("#sermonSeries");
+  sel.innerHTML = '<option value="">— None —</option>';
+  series.forEach(s => {
+    const opt = document.createElement("option");
+    opt.value = s.id;
+    opt.textContent = s.title;
+    sel.appendChild(opt);
+  });
+}
+
+/* ---------------- New series ---------------- */
+$("#newSeriesBtn").onclick = async () => {
+  const title = prompt("Series title:");
+  if(!title) return;
+  const { data, error } = await sbClient
+    .from("sermon_series")
+    .insert({ user_id: currentUser.id, title })
+    .select()
+    .single();
+  if(error){ showToast("Couldn't create series: " + error.message, true); return; }
+  series.unshift(data);
+  render();
+  showToast("Series created");
+};
+
+/* ---------------- New sermon / open / editor ---------------- */
+$("#newSermonBtn").onclick = () => openSermon(null);
+
+async function openSermon(id){
+  if(id){
+    const { data, error } = await sbClient.from("sermons").select("*").eq("id", id).single();
+    if(error){ showToast("Couldn't load sermon: " + error.message, true); return; }
+    activeSermon = data;
+    outlinePoints = await loadOutlinePoints(id);
+  } else {
+    activeSermon = {
+      id: null, title: "", scripture_reference: "", big_idea: "",
+      status: "draft", preach_date: null, series_id: activeSeriesFilter !== "all" ? activeSeriesFilter : null,
+      notes: ""
+    };
+    outlinePoints = [];
+  }
+  deletedPointIds = [];
+  fillEditor();
+  $("#listView").classList.add("hidden");
+  $("#editorView").classList.remove("hidden");
+}
+
+$("#backBtn").onclick = () => {
+  $("#editorView").classList.add("hidden");
+  $("#listView").classList.remove("hidden");
+  activeSermon = null;
+};
+
+function fillEditor(){
+  $("#sermonTitle").value = activeSermon.title || "";
+  $("#sermonStatus").value = activeSermon.status || "draft";
+  $("#sermonScripture").value = activeSermon.scripture_reference || "";
+  $("#sermonDate").value = activeSermon.preach_date || "";
+  $("#sermonSeries").value = activeSermon.series_id || "";
+  $("#sermonBigIdea").value = activeSermon.big_idea || "";
+  $("#sermonNotes").value = activeSermon.notes || "";
+  $("#deleteSermonBtn").classList.toggle("hidden", !activeSermon.id);
+  renderOutlinePoints();
+}
+
+/* ---------------- Outline points UI ---------------- */
+function renderOutlinePoints(){
+  const el = $("#outlinePoints");
+  el.innerHTML = "";
+  outlinePoints
+    .sort((a,b) => a.order_index - b.order_index)
+    .forEach((p, idx) => {
+      const div = document.createElement("div");
+      div.className = "outline-point";
+      div.innerHTML = `
+        <div class="outline-point-head">
+          <span class="tag">${p.point_type}</span>
+          <div class="point-controls">
+            <button data-action="up" title="Move up">↑</button>
+            <button data-action="down" title="Move down">↓</button>
+            <button data-action="remove" title="Remove">✕</button>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:8px;">
+          <input type="text" data-field="heading" placeholder="Point heading" value="${escapeAttr(p.heading || '')}" />
+        </div>
+        <div class="row" style="margin-bottom:0;">
+          <div class="field" style="flex:2;">
+            <textarea data-field="content" placeholder="Explanation, exegesis, application...">${escapeHtml(p.content || '')}</textarea>
+          </div>
+          <div class="field" style="flex:1;">
+            <input type="text" data-field="scripture_reference" placeholder="Scripture (optional)" value="${escapeAttr(p.scripture_reference || '')}" />
+            <select data-field="point_type" style="margin-top:8px;">
+              <option value="main" ${p.point_type==='main'?'selected':''}>Main Point</option>
+              <option value="sub" ${p.point_type==='sub'?'selected':''}>Sub-Point</option>
+              <option value="illustration" ${p.point_type==='illustration'?'selected':''}>Illustration</option>
+              <option value="application" ${p.point_type==='application'?'selected':''}>Application</option>
+            </select>
+          </div>
+        </div>
+      `;
+      // wire field changes
+      div.querySelectorAll("[data-field]").forEach(inputEl => {
+        inputEl.addEventListener("input", () => {
+          p[inputEl.dataset.field] = inputEl.value;
+        });
+      });
+      div.querySelector('[data-action="up"]').onclick = () => moveOutlinePoint(idx, -1);
+      div.querySelector('[data-action="down"]').onclick = () => moveOutlinePoint(idx, 1);
+      div.querySelector('[data-action="remove"]').onclick = () => removeOutlinePoint(idx);
+      el.appendChild(div);
+    });
+}
+
+function moveOutlinePoint(idx, dir){
+  const target = idx + dir;
+  if(target < 0 || target >= outlinePoints.length) return;
+  [outlinePoints[idx].order_index, outlinePoints[target].order_index] =
+    [outlinePoints[target].order_index, outlinePoints[idx].order_index];
+  [outlinePoints[idx], outlinePoints[target]] = [outlinePoints[target], outlinePoints[idx]];
+  renderOutlinePoints();
+}
+
+function removeOutlinePoint(idx){
+  const [removed] = outlinePoints.splice(idx, 1);
+  if(removed.id) deletedPointIds.push(removed.id);
+  outlinePoints.forEach((p, i) => p.order_index = i);
+  renderOutlinePoints();
+}
+
+$("#addPointBtn").onclick = () => {
+  outlinePoints.push({
+    id: null,
+    heading: "",
+    content: "",
+    scripture_reference: "",
+    point_type: "main",
+    order_index: outlinePoints.length
+  });
+  renderOutlinePoints();
+};
+
+/* ---------------- AI Assist ---------------- */
+$("#aiAssistBtn").onclick = async () => {
+  const title = $("#sermonTitle").value.trim();
+  const scripture = $("#sermonScripture").value.trim();
+  const bigIdea = $("#sermonBigIdea").value.trim();
+
+  if(!title && !scripture){
+    showToast("Add a title or scripture reference first", true);
+    return;
+  }
+
+  const btn = $("#aiAssistBtn");
+  const originalLabel = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner"></span> Thinking...';
+  btn.disabled = true;
+
+  try {
+    const prompt = `You are helping a pastor build a sermon outline for Berean AI / The Shepherd's Library.
+Sermon title: ${title || "(untitled)"}
+Primary scripture: ${scripture || "(none given)"}
+Big idea: ${bigIdea || "(not yet defined)"}
+
+Suggest 3-4 main outline points for this sermon. For each point return:
+- heading (short, punchy)
+- 1-2 sentence explanation
+- a supporting scripture reference if relevant
+
+Respond ONLY as JSON: an array of objects with keys "heading", "content", "scripture_reference".`;
+
+    const res = await fetch(AI_PROXY_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
+    });
+
+    if(!res.ok) throw new Error(`AI proxy returned ${res.status}`);
+    const data = await res.json();
+
+    let suggestions;
+    try {
+      const cleaned = (data.text || "").replace(/```json|```/g, "").trim();
+      suggestions = JSON.parse(cleaned);
+    } catch(parseErr){
+      throw new Error("Couldn't parse AI response as outline points");
+    }
+
+    suggestions.forEach(s => {
+      outlinePoints.push({
+        id: null,
+        heading: s.heading || "",
+        content: s.content || "",
+        scripture_reference: s.scripture_reference || "",
+        point_type: "main",
+        order_index: outlinePoints.length
+      });
+    });
+    renderOutlinePoints();
+    showToast("AI suggestions added — review and edit as needed");
+  } catch(err){
+    showToast("AI Assist failed: " + err.message, true);
+  } finally {
+    btn.innerHTML = originalLabel;
+    btn.disabled = false;
+  }
+};
+
+/* ---------------- Save / Delete sermon ---------------- */
+$("#saveSermonBtn").onclick = async () => {
+  const payload = {
+    user_id: currentUser.id,
+    title: $("#sermonTitle").value.trim(),
+    status: $("#sermonStatus").value,
+    scripture_reference: $("#sermonScripture").value.trim(),
+    preach_date: $("#sermonDate").value || null,
+    series_id: $("#sermonSeries").value || null,
+    big_idea: $("#sermonBigIdea").value.trim(),
+    notes: $("#sermonNotes").value.trim()
+  };
+
+  if(!payload.title){
+    showToast("Sermon needs a title before saving", true);
+    return;
+  }
+
+  const btn = $("#saveSermonBtn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Saving...';
+
+  try {
+    let sermonId = activeSermon.id;
+    if(sermonId){
+      const { error } = await sbClient.from("sermons").update(payload).eq("id", sermonId);
+      if(error) throw error;
+    } else {
+      const { data, error } = await sbClient.from("sermons").insert(payload).select().single();
+      if(error) throw error;
+      sermonId = data.id;
+      activeSermon = data;
+    }
+
+    // sync outline points: delete removed, upsert the rest
+    if(deletedPointIds.length){
+      const { error: delErr } = await sbClient
+        .from("sermon_outline_points")
+        .delete()
+        .in("id", deletedPointIds);
+      if(delErr) throw delErr;
+    }
+
+    for(const p of outlinePoints){
+      const pointPayload = {
+        sermon_id: sermonId,
+        user_id: currentUser.id,
+        order_index: p.order_index,
+        heading: p.heading || "",
+        content: p.content || "",
+        scripture_reference: p.scripture_reference || "",
+        point_type: p.point_type || "main"
+      };
+      if(p.id){
+        const { error } = await sbClient.from("sermon_outline_points").update(pointPayload).eq("id", p.id);
+        if(error) throw error;
+      } else {
+        const { data, error } = await sbClient.from("sermon_outline_points").insert(pointPayload).select().single();
+        if(error) throw error;
+        p.id = data.id;
+      }
+    }
+
+    await loadSermons();
+    render();
+    showToast("Sermon saved");
+  } catch(err){
+    showToast("Save failed: " + err.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Save";
+  }
+};
+
+$("#deleteSermonBtn").onclick = async () => {
+  if(!activeSermon?.id) return;
+  if(!confirm("Delete this sermon and its entire outline? This can't be undone.")) return;
+  const { error } = await sbClient.from("sermons").delete().eq("id", activeSermon.id);
+  if(error){ showToast("Delete failed: " + error.message, true); return; }
+  sermons = sermons.filter(s => s.id !== activeSermon.id);
+  activeSermon = null;
+  $("#editorView").classList.add("hidden");
+  $("#listView").classList.remove("hidden");
+  render();
+  showToast("Sermon deleted");
+};
+
+/* ---------------- Utils ---------------- */
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, m => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[m]));
+}
+function escapeAttr(str){ return escapeHtml(str); }
+
+init();
+</script>
+</body>
+</html>
